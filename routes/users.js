@@ -1,53 +1,53 @@
 const express = require('express');
 const multer = require('../config/multer');
+const User = require('../models/user');
+
 
 const router = express.Router();
 
 
 
+
 router.route('/timeline')
-    .get( isLoggedIn, (req, res, next) => {
+    .get((req, res, next) => {
+        console.log(req.params);
         res.render('pages/timeline', {
-            user: req.user
+            user: req.user,
+            acc: req.acc
         });
     })
-    .post( isLoggedIn, multer.uploadAvatar, (req, res, next) => {
+    .post(multer.uploadAvatar, (req, res, next) => {
 
     })
 
-router.get('/about', isLoggedIn, (req, res) => {
+router.get('/about', (req, res) => {
     res.render('pages/about', {
-        user: req.user
+        user: req.user,
+        acc: req.acc
     });
 });
 
-router.get('/change-password', isLoggedIn, (req, res) => {
+router.get('/change-password', (req, res) => {
     res.render('pages/change-password', {
-        user: req.user
+        user: req.user,
+        acc: req.acc
     });
 });
 
-router.get('/albums', isLoggedIn, (req, res) => {
+router.get('/albums', (req, res) => {
     res.render('pages/albums', {
-        user: req.user
+        user: req.user,
+        acc: req.acc
     })
 });
 
-router.get('/friends', isLoggedIn, (req, res) => {
+router.get('/friends', (req, res) => {
     res.render('pages/friends', {
-        user: req.user
+        user: req.user,
+        acc: req.acc
     })
 });
 
-// route middleware to make sure a user is logged in
-function isLoggedIn(req, res, next) {
 
-    // if user is authenticated in the session, carry on 
-    if (req.isAuthenticated())
-        return next();
-
-    // if they aren't redirect them to the home page
-    res.redirect('/login');
-}
 
 module.exports = router;

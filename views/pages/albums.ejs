@@ -18,24 +18,24 @@
             ================================================= -->
         <div class="timeline">
             <div class="timeline-cover">
-
+                <img src="<%= acc.background %>" alt="" class="timeline-cover-img" />
                 <!--Timeline Menu for Large Screens-->
                 <div class="timeline-nav-bar hidden-sm hidden-xs">
                     <div class="row">
                         <div class="col-md-3">
                             <div class="profile-info">
-                                <img src=<%= user.avatar %> alt="" class="img-responsive profile-photo" />
+                                <img src="<%= acc.avatar %>" alt="" class="img-responsive profile-photo" />
                                 <h3>Sarah Cruiz</h3>
                                 <p class="text-muted">Creative Director</p>
                             </div>
                         </div>
                         <div class="col-md-9">
                             <ul class="list-inline profile-menu">
-                                <% if (user) { %>
-                                <li><a href="/<%= user.account %>/timeline">Timeline</a></li>
-                                <li><a href="/<%= user.account %>/about">About</a></li>
-                                <li><a href="/<%= user.account %>/albums" class="active">Album</a></li>
-                                <li><a href="/<%= user.account %>/friends">Friends</a></li>
+                                <% if (acc) { %>
+                                <li><a href="/<%= acc.account%>/timeline">Timeline</a></li>
+                                <li><a href="/<%= acc.account%>/about">About</a></li>
+                                <li><a href="/<%= acc.account%>/albums" class="active">Album</a></li>
+                                <li><a href="/<%= acc.account%>/friends">Friends</a></li>
                                 <% } %>
                             </ul>
                             <ul class="follow-me list-inline">
@@ -56,11 +56,11 @@
                     </div>
                     <div class="mobile-menu">
                         <ul class="list-inline">
-                            <% if (user) { %>
-                            <li><a href="/<%= user.account %>/timeline">Timeline</a></li>
-                            <li><a href="/<%= user.account %>/about">About</a></li>
-                            <li><a href="/<%= user.account %>/albums" class="active">Album</a></li>
-                            <li><a href="/<%= user.account %>/friends">Friends</a></li>
+                            <% if (acc) { %>
+                            <li><a href="/<%= acc.account%>/timeline">Timeline</a></li>
+                            <li><a href="/<%= acc.account%>/about">About</a></li>
+                            <li><a href="/<%= acc.account%>/albums" class="active">Album</a></li>
+                            <li><a href="/<%= acc.account%>/friends">Friends</a></li>
                             <% } %>
                         </ul>
                         <button class="btn-primary">Add Friend</button>

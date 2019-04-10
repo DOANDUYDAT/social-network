@@ -78,7 +78,7 @@ User.deleteMany()
     .then(() => {
         const users = [];
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 10; i++) {
             let lname = faker.name.lastName();
             let fname = faker.name.firstName();
             let account = fname.toLowerCase().split(' ').join('.') + '.' + lname.toLowerCase().split(' ').join('.') + '.' + faker.random.number(100000);

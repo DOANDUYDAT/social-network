@@ -20,7 +20,7 @@
               ================================================= -->
                 <div class="col-md-3 static">
                     <div class="profile-card">
-                        <img src=<%= user.avatar %> alt="user" class="profile-photo" />
+                        <img src="<%= user.avatar %>" alt="user" class="profile-photo" />
                         <% if (user) { %>
                         <h5><a href="/users/<%= user.account %>" class="text-white">Sarah Cruiz</a></h5>
                         <% } %>
@@ -91,7 +91,7 @@
                             <div class="row">
                                 <div class="col-md-7 col-sm-7">
                                     <div class="form-group">
-                                        <img src=<%= user.avatar %> alt="" class="profile-photo-md" />
+                                        <img src="<%= user.avatar %>" alt="" class="profile-photo-md" />
                                         <textarea name="texts" id="exampleTextarea" cols="30" rows="1"
                                             class="form-control" placeholder="Write what you wish"></textarea>
                                     </div>
@@ -101,9 +101,11 @@
                                         <ul class="publishing-tools list-inline">
                                             <li><a href="#"><i class="ion-compose"></i></a></li>
                                             <li><a href="#">
-                                                <label for="input-image"><i class="ion-images"></i></label>
-                                                <input type="file" id="input-image" name="photos" style="width: 0px; height: 0px; opacity: 0; position: absolute;" multiple />
-                                            </a></li>
+                                                    <label for="input-image"><i class="ion-images"></i></label>
+                                                    <input type="file" id="input-image" name="photos"
+                                                        style="width: 0px; height: 0px; opacity: 0; position: absolute;"
+                                                        multiple />
+                                                </a></li>
                                             <li><a href="#"><i class="ion-ios-videocam"></i></a></li>
                                             <li><a href="#"><i class="ion-map"></i></a></li>
                                         </ul>
@@ -165,7 +167,7 @@
 
                     <!-- Post Content
                 ================================================= -->
-                    <div class="post-content">
+                    <!-- <div class="post-content">
                         <video class="post-video" controls>
                             <source src="videos/8.mp4" type="video/mp4"> </video>
                         <div class="post-container">
@@ -215,7 +217,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Post Content
                 ================================================= -->
@@ -443,6 +445,7 @@
 
     <!-- script -->
     <% include ../partials/script %>
+    
 </body>
 
 </html>

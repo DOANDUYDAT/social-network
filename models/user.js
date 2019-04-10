@@ -18,11 +18,20 @@ const userSchema = new Schema({
         city: String,
         country: String
     },
-    friends: [ObjectId],
+    friends: [{
+        id: ObjectId,
+        account: String
+    }],
     posts: [ObjectId],
     albums: [ObjectId],
-    avatar: String,
-    background: String,
+    avatar: {
+        type: String,
+        default: '/images/avatar-default.png'
+    },
+    background: {
+        type: String,
+        default: '/images/background-default.jpg'
+    },
 });
 
 
@@ -30,15 +39,19 @@ const userSchema = new Schema({
 
 // methods ======================
 // generating a hash
-userSchema.methods.generateHash = function(password) {
+userSchema.methods.generateHash = function (password) {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
     return hash;
 };
 
 // checking if password is valid
-userSchema.methods.validPassword = function(password) {
-     return bcrypt.compareSync(password, this.password);
+userSchema.methods.validPassword = function (password) {
+    return bcrypt.compareSync(password, this.password);
 };
 
 const User = module.exports = mongoose.model('User', userSchema);
+
+
+
+

@@ -1,6 +1,7 @@
 // load all the things we need
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const faker = require('faker');
 
 // load up the user model
 const User = require('../models/user');
@@ -63,6 +64,7 @@ passport.use('local-signup', new LocalStrategy({
                     // set the user's local credentials
                     newUser.name.first = req.body.firstname;
                     newUser.name.last = req.body.lastname;
+                    newUser.account = req.body.firstname.toLowerCase().split(' ').join('.') + '.' + req.body.lastname.toLowerCase().split(' ').join('.') + '.' + faker.random.number(100000);
                     newUser.email = email;
                     newUser.password = newUser.generateHash(password);
                     newUser.gender = req.body.gender;

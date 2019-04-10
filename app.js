@@ -6,8 +6,7 @@ const morgan = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
 
-
-
+const middle = require('./middleware/middleware');
 const passport = require('./config/passport');
 const configDB = require('./config/database');
 const routes = require('./routes');
@@ -31,8 +30,8 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 
 // set up our express application
 app.use(morgan('dev')); // log every request to the console
-app.use(bodyParser.urlencoded({ extended: false })); // get information from html forms
-
+app.use(bodyParser.urlencoded({ extended: false })); // get information from html forms, parse application/x-www-form-urlencoded
+app.use(bodyParser.json());    // parse application/json
 
 // view engine
 app.set('views', path.join(__dirname, 'views'));
@@ -50,22 +49,10 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 
 // khong lưu cache để  ngăn go back lại trang sau khi logout
-app.use(function (req, res, next) {
-  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-  next();
-});
-
-// app.get('/chat', (req, res) => {
-//   res.sendFile(__dirname + '/index.html');
-// })
-
-app.use('/', routes.home);
-app.use('/:userId', routes.users);
-
-// Route not found (404)
-app.use(function (req, res, next) {
-  return res.status(404).render('pages/404');
-});
+// app.use(function (req, res, next) {
+//   res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+//   next();
+// });
 
 
 
@@ -73,12 +60,70 @@ const server = app.listen(port, () => console.log(`Example app listening on port
 
 const io = require('socket.io')(server);
 
-var roomno = 1;
+// route middleware to make sure a user is logged in
+function isLoggedIn(req, res, next) {
 
+  // if user is authenticated in the session, carry on 
+  if (req.isAuthenticated())
+    return next();
+
+  // if they aren't redirect them to the home page
+  res.redirect('/login');
+}
+app.get('/chat', isLoggedIn, (req, res) => {
+
+  res.render('pages/index', {
+    user: req.user
+  })
+});
+
+app.use('/', routes.home);
+app.use('/:userAccount', middle.isLoggedIn , middle.getInformationOfUserAccount, routes.users);
+
+// Route not found (404)
+app.use(function (req, res, next) {
+  return res.status(404).render('pages/404');
+});
+
+
+// route middleware to make sure a user is logged in
+function isLoggedIn(req, res, next) {
+
+  // if user is authenticated in the session, carry on 
+  if (req.isAuthenticated())
+      return next();
+
+  // if they aren't redirect them to the home page
+  res.redirect('/login');
+}
+// lấy thông tin của userAccount tương ứng 
+function getInformationOfUserAccount(req, res, next) {
+  let acc = req.params.userAccount;
+  console.log(req.params);
+  User.findOne({ account: acc }, (err, user) => {
+      if(err) throw err;
+      if(user) {
+          req.acc = user;
+          next();
+          
+      } else {
+          res.render('pages/404');
+      }
+      
+  });
+  
+}
 
 
 io.on('connection', (socket) => {
-  console.log(socket.id);
-  socket.emit('connectToRoom', 'hello from server');
-  
+
+
+  // socket.on('disconnect', () => {
+  console.log('a user connected');
+  // console.log(socket.request);
+  socket.on('sendUserName', data => {
+    console.log(data);
+  });
+  // })
+
 });

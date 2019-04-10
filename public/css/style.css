@@ -245,9 +245,9 @@ ul{
   padding-left: 15px;
 }
 
-ul li{
+/* ul li{
   list-style-image: url("../images/bullet.png");
-}
+} */
 
 .line{
   background: #f1f2f2;
@@ -388,6 +388,7 @@ textarea{
   color: #fff;
 }
 
+
 .menu form .form-group input.form-control{
   background: rgba(255,255,255, 0.2);
   border: 0;
@@ -395,9 +396,18 @@ textarea{
   min-width: 235px;
   color: #fff;
   height: 26px;
-  border-radius: 13px;
+  border-top-left-radius: 13px;
   font-size: 13px;
   padding-left: 30px;
+}
+
+
+.menu form .form-group button.btn-info{
+  border: 0;
+  box-shadow: none;
+  height: 26px;
+  border-start-end-radius: 13px;
+  font-size: 13px;
 }
 
 .menu ul.main-menu li a{
@@ -427,6 +437,7 @@ textarea{
   padding: 0;
 }
 
+
 .menu ul.main-menu li ul.dropdown-menu li{
   list-style: none;
   padding: 5px 0;
@@ -446,6 +457,8 @@ textarea{
 .navbar-default .navbar-collapse, .navbar-default .navbar-form{
   border: 0;
 }
+
+
 
 /*For Homepage Header | Display on Scroll*/
 
@@ -1549,14 +1562,22 @@ ul.online-users li span.online-dot{
   ==================================================*/
 
 .timeline-cover{
-  background: url("../images/covers/1.jpg") no-repeat;
+  /* background: url("../images/covers/1.jpg") no-repeat; */
   background-position: center;
   background-size: cover;
   min-height: 360px;
   border-radius: 0 0 4px 4px;
   position: relative;
 }
+.timeline-cover-img {
+  /* background-position: center;
+  background-size: cover; */
+  width: 100%;
+  max-height: 360px;
+  border-radius: 0 0 4px 4px;
+  position: relative;
 
+}
 /*Timeline Menu for Large Screens*/
 
 .timeline-cover .timeline-nav-bar{

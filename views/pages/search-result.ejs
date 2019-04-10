@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../partials/head %>
+    <title>News Feed | Check what your friends are doing</title>
+</head>
+
+<body>
+    <header id="header">
+        <% include ../partials/header %>
+    </header>
+
+    <!-- main -->
+    <div id="page-contents">
+        <div class="container">
+            <div class="row">
+
+                <!-- Newsfeed Common Side Bar Left
+              ================================================= -->
+                <div class="col-md-3 static">
+                    <div class="profile-card">
+                        <img src=<%= user.avatar %> alt="user" class="profile-photo" />
+                        <% if (user) { %>
+                        <h5><a href="/users/<%= user.account %>" class="text-white">Sarah Cruiz</a></h5>
+                        <% } %>
+                        <a href="#" class="text-white"><i class="ion ion-android-person-add"></i> 1,299 followers</a>
+                    </div>
+                    <!--profile card ends-->
+                    <ul class="nav-news-feed">
+                        <li><i class="icon ion-ios-paper"></i>
+                            <div><a href="/">My Newsfeed</a></div>
+                        </li>
+                        <li><i class="icon ion-ios-people"></i>
+                            <div><a href="#">People Nearby</a></div>
+                        </li>
+                        <li><i class="icon ion-ios-people-outline"></i>
+                            <div><a href="/friends">Friends</a></div>
+                        </li>
+                        <li><i class="icon ion-chatboxes"></i>
+                            <div><a href="/messages">Messages</a></div>
+                        </li>
+                        <li><i class="icon ion-images"></i>
+                            <div><a href="/photos">Images</a></div>
+                        </li>
+                        <li><i class="icon ion-ios-videocam"></i>
+                            <div><a href="#">Videos</a></div>
+                        </li>
+                    </ul>
+                    <!--news-feed links ends-->
+                    <div id="chat-block">
+                        <div class="title">Chat online</div>
+                        <ul class="online-users list-inline">
+                            <li><a href="newsfeed-messages.html" title="Linda Lohan"><img src="/images/users/user-2.jpg"
+                                        alt="user" class="img-responsive profile-photo" /><span
+                                        class="online-dot"></span></a></li>
+                            <li><a href="newsfeed-messages.html" title="Sophia Lee"><img src="/images/users/user-3.jpg"
+                                        alt="user" class="img-responsive profile-photo" /><span
+                                        class="online-dot"></span></a></li>
+                            <li><a href="newsfeed-messages.html" title="John Doe"><img src="/images/users/user-4.jpg"
+                                        alt="user" class="img-responsive profile-photo" /><span
+                                        class="online-dot"></span></a></li>
+                            <li><a href="newsfeed-messages.html" title="Alexis Clark"><img src="/images/users/user-5.jpg"
+                                        alt="user" class="img-responsive profile-photo" /><span
+                                        class="online-dot"></span></a></li>
+                            <li><a href="newsfeed-messages.html" title="James Carter"><img src="/images/users/user-6.jpg"
+                                        alt="user" class="img-responsive profile-photo" /><span
+                                        class="online-dot"></span></a></li>
+                            <li><a href="newsfeed-messages.html" title="Robert Cook"><img src="/images/users/user-7.jpg"
+                                        alt="user" class="img-responsive profile-photo" /><span
+                                        class="online-dot"></span></a></li>
+                            <li><a href="newsfeed-messages.html" title="Richard Bell"><img src="/images/users/user-8.jpg"
+                                        alt="user" class="img-responsive profile-photo" /><span
+                                        class="online-dot"></span></a></li>
+                            <li><a href="newsfeed-messages.html" title="Anna Young"><img src="/images/users/user-9.jpg"
+                                        alt="user" class="img-responsive profile-photo" /><span
+                                        class="online-dot"></span></a></li>
+                            <li><a href="newsfeed-messages.html" title="Julia Cox"><img src="/images/users/user-10.jpg"
+                                        alt="user" class="img-responsive profile-photo" /><span
+                                        class="online-dot"></span></a></li>
+                        </ul>
+                    </div>
+                    <!--chat block ends-->
+                </div>
+                <div class="col-md-7" id="search-result">
+                    <h3 class="grey">People</h3>
+                    <br>
+                    <% result.forEach( friend =>  { %>
+                    <% if (friend.account !== user.account) { %>
+                    <div class="row">
+                        <div class="col-md-7 col-sm-7">
+                            <div class="form-group">
+                                <img src="<%= friend.avatar %>" alt="" class="profile-photo" />
+                                <a href="/<%= friend.account %>" class="profile-link">&nbsp;&nbsp;&nbsp;<%= friend.name.first %> <%= friend.name.last%></a>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-md-5 col-sm-5">
+                            <div class="tools">
+
+                                <button class=" btn-primary pull-right" type="submit">Add Friend</button>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+                    <% }) %>
+                </div>
+                <!-- Newsfeed Common Side Bar Right
+              ================================================= -->
+                <div class="col-md-2 static">
+                    <div class="suggestions" id="sticky-sidebar">
+                        <h4 class="grey">Who to Follow</h4>
+                        <div class="follow-user">
+                            <img src="/images/users/user-11.jpg" alt="" class="profile-photo-sm pull-left" />
+                            <div>
+                                <h5><a href="timeline.html">Diana Amber</a></h5>
+                                <a href="#" class="text-green">Add friend</a>
+                            </div>
+                        </div>
+                        <div class="follow-user">
+                            <img src="/images/users/user-12.jpg" alt="" class="profile-photo-sm pull-left" />
+                            <div>
+                                <h5><a href="timeline.html">Cris Haris</a></h5>
+                                <a href="#" class="text-green">Add friend</a>
+                            </div>
+                        </div>
+                        <div class="follow-user">
+                            <img src="/images/users/user-13.jpg" alt="" class="profile-photo-sm pull-left" />
+                            <div>
+                                <h5><a href="timeline.html">Brian Walton</a></h5>
+                                <a href="#" class="text-green">Add friend</a>
+                            </div>
+                        </div>
+                        <div class="follow-user">
+                            <img src="/images/users/user-14.jpg" alt="" class="profile-photo-sm pull-left" />
+                            <div>
+                                <h5><a href="timeline.html">Olivia Steward</a></h5>
+                                <a href="#" class="text-green">Add friend</a>
+                            </div>
+                        </div>
+                        <div class="follow-user">
+                            <img src="/images/users/user-15.jpg" alt="" class="profile-photo-sm pull-left" />
+                            <div>
+                                <h5><a href="timeline.html">Sophia Page</a></h5>
+                                <a href="#" class="text-green">Add friend</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer -->
+    <% include ../partials/footer %>
+
+    <!-- script -->
+    <% include ../partials/script %>
+
+</body>
+
+</html>

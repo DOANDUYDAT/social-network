@@ -1,21 +1,23 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+
 const passport = require('../config/passport');
 const User = require('../models/user');
 
 const router = express.Router();
 
-
+router.use(bodyParser.json());
 
 router.route('/login')
     .get((req, res, next) => {
-        if (req.isUnauthenticated()){
+        if (req.isUnauthenticated()) {
             res.render('pages/login', {
                 message: req.flash('loginMessage')
             });
         } else {
             res.redirect('/');
         }
-        
+
     })
     // process the login form
     .post(passport.authenticate('local-login', {
@@ -34,7 +36,7 @@ router.route('/signup')
         } else {
             res.redirect('/');
         }
-        
+
     })
     // process the signup form
     .post(passport.authenticate('local-signup', {
@@ -49,6 +51,49 @@ router.get('/', isLoggedIn, (req, res) => {
     });
 });
 
+router.get('/search', isLoggedIn, (req, res) => {
+    let userAccount = req.user.account;
+    User.find({ account: { $ne: userAccount } }, "name", (err, result) => {
+        if (err) throw err;
+        res.status(200).json(result);
+    });
+});
+
+router.get('/search/top/', isLoggedIn, (req, res) => {
+    let keys = req.query.keys;
+    console.log(keys);
+    if (keys) {
+        keys = keys.split(' ');
+        let regexString = "";
+
+        for (let i = 0; i < keys.length; i++) {
+            regexString += keys[i];
+            if (i < keys.length - 1) regexString += '|';
+        }
+
+        let re = new RegExp(regexString, 'ig');
+        console.log(re);
+        let query = {
+            $or: [
+                { "name.first": re },
+                { "name.last": re }
+            ]
+
+        }
+
+        User.find(query, "account name avatar", (err, userResult) => {
+            if (err) throw err;
+            console.log(userResult);
+            res.render('pages/search-result', {
+                user: req.user,
+                result: userResult
+            });
+            // res.json(userResult);
+        });
+    } else {
+        res.render('pages/404');
+    }
+});
 
 router.get('/friends', isLoggedIn, (req, res) => {
     res.render('pages/friends-newsfeed', {
@@ -75,16 +120,17 @@ router.get('/logout', isLoggedIn, (req, res) => {
 
 router.get('/:userAccount', isLoggedIn, (req, res) => {
     let acc = req.params.userAccount;
-    User.findOne({account: acc}, (err, user) => {
+    User.findOne({ account: acc }, (err, user) => {
         if (user) {
             res.render('pages/timeline', {
-                user: user
+                acc: user,
+                user: req.user
             })
         } else {
             res.render('pages/404');
         }
     });
-    
+
 });
 
 

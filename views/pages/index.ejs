@@ -8,6 +8,7 @@
 
 <body>
     <h1>Express and socket.io</h1>
+    <h3>user: <%= user.name.fist%>  <%= user.name.last%></h3>
     <ul id="messages"></ul>
     <button onclick="joinRoom()">join</button>
     <form action="">
@@ -20,9 +21,10 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        let data = {
-            userName: req.user.account
-        }
+        // let data = {
+        //     userAccount: 
+        // }
+        console.log(data.userAccount);
         
 
     </script>
