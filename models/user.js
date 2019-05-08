@@ -18,10 +18,19 @@ const userSchema = new Schema({
         city: String,
         country: String
     },
-    friends: [{
-        id: ObjectId,
-        account: String
+    requestFriends: [{
+        userId: { type: ObjectId, ref: 'User' },
+        friendName: String,
+        friendAccount: String,
+        friendAvatar: String
     }],
+	friendsList: [{
+        userId: { type: ObjectId, ref: 'User' },
+        friendName: String,
+        friendAccount: String,
+        friendAvatar: String
+    }],
+    notifications: [String],
     posts: [ObjectId],
     albums: [ObjectId],
     avatar: {

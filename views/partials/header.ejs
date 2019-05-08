@@ -44,10 +44,78 @@
                 </li> -->
 
                 <% if (user) { %>
+                <input type="text" value="<%= user.account %>" id="userAccount" hidden>
+
                 <li class="dropdown"><a href="/<%= user.account %>">Home</a></li>
                 <li class="dropdown"><a href="/">Newsfeed</a></li>
-                <li class="dropdown"><a href="/messages">Messages</a></li>
-                <li class="dropdown"><a href="/notifications">Notifications</a></li>
+
+
+                <li class="dropdown">
+                    <a href="#" id="notify-friends" class="dropdown-toggle pages" data-toggle="dropdown" role="button"
+                        aria-haspopup="true" aria-expanded="false"><i class="fa fa-users"
+                            style="font-size: 20px; color: white;" title="Friend requests">
+                            <% if (user.requestFriends.length > 0) { %>
+                            <span class="badge badge-pill badge-light" style="background: red; font-size: 13px;">
+                                <%= user.requestFriends.length %></span>
+                            <% } %>
+                        </i></a>
+
+                    <ul class="dropdown-menu page-list" id="list-request-friends">
+                        <li>Friend request</li>
+                        <% user.requestFriends.forEach( friend => { %>
+                        <li>
+                            <img src="<%= friend.friendAvatar %>" alt="" class="profile-photo-md" />
+                            <a href="/<%= friend.friendAccount %>" class="profile-link"><%= friend.friendName %> </a>
+                            <p style="display: none;">Success</p>
+                            <button class="btn-xs btn-primary" onclick="acceptFriend(this)">Accept</button>
+                            <input type="text" value="<%= friend.friendAccount %>" hidden>
+                            <button class="btn-xs btn-primary" onclick="deleteFriend(this)">Delete</button>
+                        </li>
+                        <% }) %>
+                    </ul>
+
+                </li>
+
+
+                <% if (user.requestFriends.length >= 0) { %>
+
+                <li class="dropdown">
+                    <a href="#" id="notify-messages" class="dropdown-toggle pages" data-toggle="dropdown" role="button"
+                        aria-haspopup="true" aria-expanded="false"><i class="fa fa-comment"
+                            style="font-size: 20px; color: white;" title="Messages">
+                            <% if (user.notifications.length > 0) { %>
+                            <span class="badge badge-pill badge-light" style="background: red; font-size: 13px;">
+                                <%= user.notifications.length %></span>
+                            <% } %></i></a>
+
+                    <ul class="dropdown-menu page-list">
+                        <% user.requestFriends.forEach( friend => { %>
+                        <!-- <li><a href=""><%= friend %></a></li> -->
+                        <% }) %>
+                    </ul>
+
+                </li>
+
+                <% } %>
+                <li class="dropdown">
+                    <a href="#" id="notify-news" class="dropdown-toggle pages" data-toggle="dropdown" role="button"
+                        aria-haspopup="true" aria-expanded="false"><i class="fa fa-bell"
+                            style="font-size: 20px; color: white;" title="Notifications">
+                            <% if (user.notifications.length > 0) { %>
+                            <span class="badge badge-pill badge-light" style="background: red; font-size: 13px;">
+                                <%= user.notifications.length %></span>
+                            <% } %></i></a>
+                    <ul class="dropdown-menu page-list" id="list-notifications">
+                        <li>Notifications</li>
+                        <% user.notifications.forEach( notify => { %>
+                        <li>
+                            <img src="<%= friend.friendAvatar %>" alt="" class="profile-photo-md" />
+                            <a href="/<%= friend.friendAccount %>" class="profile-link"><%= friend.friendName %> </a>
+
+                        </li>
+                        <% }) %>
+                    </ul>
+                </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle pages" data-toggle="dropdown" role="button" aria-haspopup="true"
                         aria-expanded="false">Account <span><img src="/images/down-arrow.png" alt="" /></span></a>
@@ -61,7 +129,8 @@
                 <% } %>
                 <!-- <li class="dropdown"><a href="contact.html">Contact</a></li> -->
             </ul>
-            <form class="navbar-form navbar-right hidden-sm" id="searchBox" action="/search/top/" role="form" autocomplete="off">
+            <form class="navbar-form navbar-right hidden-sm" id="searchBox" action="/search/top/" role="form"
+                autocomplete="off">
                 <div class="form-group">
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control typeahead" data-provide="typeahead" placeholder="Search"

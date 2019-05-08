@@ -88,11 +88,96 @@ router.get('/search/top/', isLoggedIn, (req, res) => {
                 user: req.user,
                 result: userResult
             });
-            // res.json(userResult);
+
         });
     } else {
         res.render('pages/404');
     }
+});
+
+router.post('/request-friend', isLoggedIn, (req, res) => {
+    const acc = req.body.to;
+    const userId = req.user.id;
+    const fullNameOfNewFriend = req.user.name.first + ' ' + req.user.name.last;
+    const newFriendAccount = req.user.account;
+    const newFriendAvatar = req.user.avatar;
+    const newFriend = { fullNameOfNewFriend, newFriendAccount, newFriendAvatar };
+    console.log(newFriend);
+    User.findOne({ "account": acc }, (err, user) => {
+        if (err) throw err;
+
+        user.requestFriends.unshift({
+            "userId": userId,
+            "friendName": fullNameOfNewFriend,
+            "friendAccount": newFriendAccount,
+            "friendAvatar": newFriendAvatar
+        });
+        user.save((err) => {
+            if (err) throw err;
+            console.log(user.requestFriends);
+
+        })
+    })
+    res.status(200).end();
+});
+
+router.get('/friend', isLoggedIn, (req, res) => {
+    const acc = req.query.key;
+    User.findOne({ "account": acc }, "account name avatar", (err, user) => {
+        if (err) throw err;
+        res.status(200).json(user);
+    })
+});
+
+router.post('/add-friend', isLoggedIn, (req, res) => {
+    console.log('url:' + req.baseUrl);
+    const acc = req.user.account;
+    const newFriend = req.body.friend;
+
+    console.log('newFriend: ' + newFriend);
+    const answer = req.body.answer;
+    if (answer === 'yes') {
+        User.findOne({ 'account': acc }, (err, user) => {
+            if (err) throw err;
+            if (user.requestFriends !== null) {
+                let friend = user.requestFriends.find(friend => {
+                    return friend.friendAccount === newFriend;
+                })
+
+                user.requestFriends = user.requestFriends.filter(friend => {
+                    return friend.friendAccount !== newFriend;
+                })
+
+                console.log(friend);
+                user.friendsList.push({
+                    "userId": friend.userId,
+                    "friendName": friend.friendName,
+                    "friendAccount": friend.friendAccount,
+                    "friendAvatar": friend.friendAvatar
+                });
+                user.save((err) => {
+                    if (err) throw err;
+                    console.log('firendList: ' + user.friendsList);
+
+                })
+            }
+        })
+
+    }
+    if (answer === 'no') {
+        User.findOne({ 'account': acc }, (err, user) => {
+            if (err) throw err;
+            user.requestFriends = user.requestFriends.filter(friend => {
+                return friend.friendAccount !== newFriend;
+            })
+            user.save((err) => {
+                if (err) throw err;
+                console.log('requestList: ' + user.requestFriends);
+
+            })
+        })
+    }
+    res.end();
 });
 
 router.get('/friends', isLoggedIn, (req, res) => {

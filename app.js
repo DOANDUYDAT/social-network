@@ -70,7 +70,7 @@ function isLoggedIn(req, res, next) {
   // if they aren't redirect them to the home page
   res.redirect('/login');
 }
-app.get('/chat', isLoggedIn, (req, res) => {
+app.get('/chat', middle.isLoggedIn, (req, res) => {
 
   res.render('pages/index', {
     user: req.user
@@ -86,44 +86,39 @@ app.use(function (req, res, next) {
 });
 
 
-// route middleware to make sure a user is logged in
-function isLoggedIn(req, res, next) {
 
-  // if user is authenticated in the session, carry on 
-  if (req.isAuthenticated())
-      return next();
 
-  // if they aren't redirect them to the home page
-  res.redirect('/login');
-}
-// lấy thông tin của userAccount tương ứng 
-function getInformationOfUserAccount(req, res, next) {
-  let acc = req.params.userAccount;
-  console.log(req.params);
-  User.findOne({ account: acc }, (err, user) => {
-      if(err) throw err;
-      if(user) {
-          req.acc = user;
-          next();
-          
-      } else {
-          res.render('pages/404');
-      }
-      
+io.on('connection', function(socket){
+  console.log('an user connected');
+  socket.on('join', data => {
+    socket.join(data.name);
+    console.log(data.name);
   });
-  
-}
-
-
-io.on('connection', (socket) => {
-
-
-  // socket.on('disconnect', () => {
-  console.log('a user connected');
-  // console.log(socket.request);
-  socket.on('sendUserName', data => {
-    console.log(data);
+  socket.on('msg', data => {
+    socket.broadcast.emit('msg', data);
   });
+  socket.on('request friend', data => {
+    socket.to(data.to).emit(data.to, {
+      from: data.from,
+      type: "request friend"
+    })
+  });
+  socket.on('accept friend', data => {
+    socket.to(data.to).emit(data.to, {
+      from: data.from,
+      type: 'accept friend'
+    })
+  })
+  // socket.on('send-notifications', (data) => {
+  //   console.log(data);
+  //   socket.to(data.to).emit('receive-notifications', {
+  //     from: data.from, 
+  //     to: data.to,
+  //     type: data.type
+  //   })
   // })
 
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
 });

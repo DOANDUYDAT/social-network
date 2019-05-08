@@ -425,6 +425,11 @@ textarea{
   background: none;
 }
 
+.menu ul.main-menu li.dropdown i:hover, .menu ul.main-menu li.dropdown i:active, .menu ul.main-menu li.dropdown i:focus{
+  color: #27aae1;
+  background: none;
+}
+
 .menu ul.main-menu li.open a, .menu ul.main-menu li.open a:active, .menu ul.main-menu li.open a:focus{
   background: transparent;
   color: #27aae1;
@@ -439,8 +444,9 @@ textarea{
 
 
 .menu ul.main-menu li ul.dropdown-menu li{
+  display: block;
   list-style: none;
-  padding: 5px 0;
+  padding: 5px 10px;
   border-bottom: 1px solid rgba(255,255,255, 0.1)
 }
 
@@ -458,6 +464,28 @@ textarea{
   border: 0;
 }
 
+#list-request-friends li {
+  display: grid;
+  grid-template-columns: auto 5fr auto auto;
+  list-style: none;
+  padding: 5px 10px;
+  border-bottom: 1px solid rgba(255,255,255, 0.1)
+}
+#list-request-friends li button {
+  height: 70%;
+  margin: 5px;
+  width: auto;
+}
+
+#list-notifications li {
+  display: grid;
+  grid-template-columns: auto auto;
+  max-width: 450px;
+  list-style: none;
+  padding: 5px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  word-wrap: break-word;
+}
 
 
 /*For Homepage Header | Display on Scroll*/
@@ -1489,7 +1517,7 @@ ul.online-users li span.online-dot{
 }
 
 .chat-room .send-message button{
-  background: #000;
+  /* background: #000; */
   color: #fff;
 }
 
@@ -2408,7 +2436,7 @@ ul.contact li i{
 @media only screen and (max-width : 768px) {
 
   .menu ul.main-menu li.dropdown ul.dropdown-menu li{background: #282425;}
-  
+
   #header-inverse nav.menu .navbar-collapse{background: rgba(0,0,0, 0.9);}
 
   .sign-up-form{left: 0; right: 0; margin: auto;}
@@ -2471,7 +2499,7 @@ ul.contact li i{
 @media only screen and (max-width : 480px) {
 
   .sign-up-form{left: 0; right: 0; margin: auto; width: 90%; overflow: hidden; border-radius: 0 0 4px 4px;}
-
+  #list-request-friends li { display: list-item;}
   #app-download ul.app-btn li button{margin-bottom: 20px;}
 
   .post-contents .post-container .post-detail .reaction{position: relative;}

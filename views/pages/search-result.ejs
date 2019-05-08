@@ -20,7 +20,7 @@
               ================================================= -->
                 <div class="col-md-3 static">
                     <div class="profile-card">
-                        <img src=<%= user.avatar %> alt="user" class="profile-photo" />
+                        <img src="<%= user.avatar %>" alt="user" class="profile-photo" />
                         <% if (user) { %>
                         <h5><a href="/users/<%= user.account %>" class="text-white">Sarah Cruiz</a></h5>
                         <% } %>
@@ -60,18 +60,18 @@
                             <li><a href="newsfeed-messages.html" title="John Doe"><img src="/images/users/user-4.jpg"
                                         alt="user" class="img-responsive profile-photo" /><span
                                         class="online-dot"></span></a></li>
-                            <li><a href="newsfeed-messages.html" title="Alexis Clark"><img src="/images/users/user-5.jpg"
-                                        alt="user" class="img-responsive profile-photo" /><span
-                                        class="online-dot"></span></a></li>
-                            <li><a href="newsfeed-messages.html" title="James Carter"><img src="/images/users/user-6.jpg"
-                                        alt="user" class="img-responsive profile-photo" /><span
-                                        class="online-dot"></span></a></li>
+                            <li><a href="newsfeed-messages.html" title="Alexis Clark"><img
+                                        src="/images/users/user-5.jpg" alt="user"
+                                        class="img-responsive profile-photo" /><span class="online-dot"></span></a></li>
+                            <li><a href="newsfeed-messages.html" title="James Carter"><img
+                                        src="/images/users/user-6.jpg" alt="user"
+                                        class="img-responsive profile-photo" /><span class="online-dot"></span></a></li>
                             <li><a href="newsfeed-messages.html" title="Robert Cook"><img src="/images/users/user-7.jpg"
                                         alt="user" class="img-responsive profile-photo" /><span
                                         class="online-dot"></span></a></li>
-                            <li><a href="newsfeed-messages.html" title="Richard Bell"><img src="/images/users/user-8.jpg"
-                                        alt="user" class="img-responsive profile-photo" /><span
-                                        class="online-dot"></span></a></li>
+                            <li><a href="newsfeed-messages.html" title="Richard Bell"><img
+                                        src="/images/users/user-8.jpg" alt="user"
+                                        class="img-responsive profile-photo" /><span class="online-dot"></span></a></li>
                             <li><a href="newsfeed-messages.html" title="Anna Young"><img src="/images/users/user-9.jpg"
                                         alt="user" class="img-responsive profile-photo" /><span
                                         class="online-dot"></span></a></li>
@@ -87,24 +87,29 @@
                     <br>
                     <% result.forEach( friend =>  { %>
                     <% if (friend.account !== user.account) { %>
-                    <div class="row">
-                        <div class="col-md-7 col-sm-7">
-                            <div class="form-group">
-                                <img src="<%= friend.avatar %>" alt="" class="profile-photo" />
-                                <a href="/<%= friend.account %>" class="profile-link">&nbsp;&nbsp;&nbsp;<%= friend.name.first %> <%= friend.name.last%></a>
-                                <hr>
+                    <!-- <form> -->
+                        <div class="row">
+                            <div class="col-md-7 col-sm-7">
+                                <div class="form-group">
+                                    <img src="<%= friend.avatar %>" alt="" class="profile-photo" />
+                                    <a href="/<%= friend.account %>"
+                                        class="profile-link">&nbsp;&nbsp;&nbsp;<%= friend.name.first %>
+                                        <%= friend.name.last%></a>
+                                    <hr>
+                                </div>
+                            </div>
+                            <div class="col-md-5 col-sm-5">
+                                
+                                <input type="hidden" value="<%= friend.account %>" >
+                                <button class=" btn-primary pull-right" id="ddd3" onclick="requestFriend(this)" >Add Friend</button>
+                                
                             </div>
                         </div>
-                        <div class="col-md-5 col-sm-5">
-                            <div class="tools">
-
-                                <button class=" btn-primary pull-right" type="submit">Add Friend</button>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- </form> -->
                     <% } %>
                     <% }) %>
                 </div>
+                
                 <!-- Newsfeed Common Side Bar Right
               ================================================= -->
                 <div class="col-md-2 static">
@@ -155,7 +160,7 @@
 
     <!-- script -->
     <% include ../partials/script %>
-
+    
 </body>
 
 </html>
