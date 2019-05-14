@@ -1,28 +1,45 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const passport = require('../config/passport');
-const Conversations = require('../models/conversations');
+const middle = require('../middleware/middleware');
+const ChatController = require('../controllers/chat');
 const Message = require('../models/message');
 
 const router = express.Router();
 
+router.use(bodyParser.json());
+router.use(middle.isLoggedIn);
 
-//= ========================
-  // Chat Routes
-  //= ========================
+// View messages to and from authenticated user
+// router.get('/', ChatController.getConversations);
 
-  // Set chat routes as a subgroup/middleware to apiRoutes
-  router.use('/chat', chatRoutes);
+// Retrieve single conversation
+router.get('/t/:conversationId', ChatController.getConversations, ChatController.getConversation, (req, res) => {
+    res.render('pages/messages', {
+        user: req.user,
+        conversations: req.fullConversations,
+        conversation: req.messages,
+        conversationId: req.params.conversationId
+    })
+});
 
-  // View messages to and from authenticated user
-  router.get('/', requireAuth, ChatController.getConversations);
+// Send reply in conversation
+router.post('/t/:conversationId', ChatController.sendReply);
 
-  // Retrieve single conversation
-  router.get('/:conversationId', requireAuth, ChatController.getConversation);
+// Start new conversation
+router.post('/t', ChatController.newConversation);
 
-  // Send reply in conversation
-  router.post('/:conversationId', requireAuth, ChatController.sendReply);
 
-  // Start new conversation
-  router.post('/new/:recipient', requireAuth, ChatController.newConversation);
+module.exports = router;
+
+
+// route middleware to make sure a user is logged in
+function isLoggedIn(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.redirect('/login');
+}

@@ -25,7 +25,7 @@
                         <div class="col-md-3">
                             <div class="profile-info">
                                 <img src="<%= acc.avatar %>" alt="" class="img-responsive profile-photo" />
-                                <h3>Sarah Cruiz</h3>
+                                <h3><%= acc.name.first %> <%= acc.name.last%></h3>
                                 <p class="text-muted">Creative Director</p>
                             </div>
                         </div>
@@ -39,7 +39,7 @@
                                 <% } %>
                             </ul>
                             <ul class="follow-me list-inline">
-                                <li>1,299 people following her</li>
+                                <!-- <li>1,299 people following her</li> -->
                                 <li><button class="btn-primary">Add Friend</button></li>
                             </ul>
                         </div>

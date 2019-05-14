@@ -1,8 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('../config/multer');
 
+const middle = require('../middleware/middleware');
+const ChatController = require('../controllers/chat');
 const passport = require('../config/passport');
 const User = require('../models/user');
+const Conversation = require('../models/conversations');
 
 const router = express.Router();
 
@@ -101,8 +105,8 @@ router.post('/request-friend', isLoggedIn, (req, res) => {
     const fullNameOfNewFriend = req.user.name.first + ' ' + req.user.name.last;
     const newFriendAccount = req.user.account;
     const newFriendAvatar = req.user.avatar;
-    const newFriend = { fullNameOfNewFriend, newFriendAccount, newFriendAvatar };
-    console.log(newFriend);
+    // const newFriend = { fullNameOfNewFriend, newFriendAccount, newFriendAvatar };
+    // console.log('new friend' +newFriend);
     User.findOne({ "account": acc }, (err, user) => {
         if (err) throw err;
 
@@ -114,30 +118,28 @@ router.post('/request-friend', isLoggedIn, (req, res) => {
         });
         user.save((err) => {
             if (err) throw err;
-            console.log(user.requestFriends);
+            // console.log('request friend:' +user.requestFriends);
 
         })
     })
-    res.status(200).end();
+    res.status(200).end('send request successfull');
 });
 
 router.get('/friend', isLoggedIn, (req, res) => {
     const acc = req.query.key;
-    User.findOne({ "account": acc }, "account name avatar", (err, user) => {
+    User.findOne({ "account": acc }, "account name avatar roomChat", (err, user) => {
         if (err) throw err;
         res.status(200).json(user);
     })
 });
 
 router.post('/add-friend', isLoggedIn, (req, res) => {
-    console.log('url:' + req.baseUrl);
-    const acc = req.user.account;
+    const acc = req.user;
     const newFriend = req.body.friend;
 
-    console.log('newFriend: ' + newFriend);
     const answer = req.body.answer;
     if (answer === 'yes') {
-        User.findOne({ 'account': acc }, (err, user) => {
+        User.findOne({ 'account': acc.account }, (err, user) => {
             if (err) throw err;
             if (user.requestFriends !== null) {
                 let friend = user.requestFriends.find(friend => {
@@ -157,12 +159,25 @@ router.post('/add-friend', isLoggedIn, (req, res) => {
                 });
                 user.save((err) => {
                     if (err) throw err;
-                    console.log('firendList: ' + user.friendsList);
 
                 })
             }
         })
+        const fullnameAcc = acc.name.first + ' ' + acc.name.last;
+        User.findOne({ 'account': newFriend }, (err, user) => {
+            if (err) throw err;
+            user.friendsList.push({
+                "userId": acc._id,
+                "friendName": fullnameAcc,
+                "friendAccount": acc.account,
+                "friendAvatar": acc.avatar
+            });
+            user.save((err) => {
+                if (err) throw err;
 
+            })
+        })
+        // res.status(200).end('accept request');
     }
     if (answer === 'no') {
         User.findOne({ 'account': acc }, (err, user) => {
@@ -172,12 +187,16 @@ router.post('/add-friend', isLoggedIn, (req, res) => {
             })
             user.save((err) => {
                 if (err) throw err;
-                console.log('requestList: ' + user.requestFriends);
 
             })
         })
+        // res.status(200).end('delete request');
     }
-    res.end();
+    // else {
+    //     res.status(200).end();
+    // }
+    // res.status(200).end();
+
 });
 
 router.get('/friends', isLoggedIn, (req, res) => {
@@ -192,11 +211,25 @@ router.get('/photos', isLoggedIn, (req, res) => {
     });
 });
 
-router.get('/messages', isLoggedIn, (req, res) => {
-    res.render('pages/messages', {
-        user: req.user
-    });
+router.get('/messages', isLoggedIn, ChatController.getConversations, (req, res) => {
+    res.status(200).render('pages/messages', {
+        user: req.user,
+        conversations: req.fullConversations,
+        conversation: ''
+    })
 });
+
+// router.get('/messages', isLoggedIn, (req, res) => {
+//     res.render('pages/messages', {
+//         user: req.user,
+//         conversations: ['helo']
+//     })
+// });
+
+
+
+// View messages to and from authenticated user
+// router.get('/messages', isLoggedIn, ChatController.getConversations);
 
 router.get('/logout', isLoggedIn, (req, res) => {
     req.logout();
@@ -206,6 +239,7 @@ router.get('/logout', isLoggedIn, (req, res) => {
 router.get('/:userAccount', isLoggedIn, (req, res) => {
     let acc = req.params.userAccount;
     User.findOne({ account: acc }, (err, user) => {
+        if (err) throw err;
         if (user) {
             res.render('pages/timeline', {
                 acc: user,
@@ -220,7 +254,45 @@ router.get('/:userAccount', isLoggedIn, (req, res) => {
 
 
 
+router.route('/:userAccount/timeline')
+    .get(isLoggedIn, getInformationOfUserAccount, (req, res, next) => {
+        console.log(req.params);
+        res.render('pages/timeline', {
+            user: req.user,
+            acc: req.acc
+        });
+    })
+    .post(multer.uploadAvatar, (req, res, next) => {
 
+    })
+
+router.get('/:userAccount/about', isLoggedIn, getInformationOfUserAccount, (req, res) => {
+    res.render('pages/about', {
+        user: req.user,
+        acc: req.acc
+    });
+});
+
+router.get('/:userAccount/change-password', isLoggedIn, getInformationOfUserAccount, (req, res) => {
+    res.render('pages/change-password', {
+        user: req.user,
+        acc: req.acc
+    });
+});
+
+router.get('/:userAccount/albums', isLoggedIn, getInformationOfUserAccount, (req, res) => {
+    res.render('pages/albums', {
+        user: req.user,
+        acc: req.acc
+    })
+});
+
+router.get('/:userAccount/friends', isLoggedIn, getInformationOfUserAccount, (req, res) => {
+    res.render('pages/friends', {
+        user: req.user,
+        acc: req.acc
+    })
+});
 
 
 
@@ -233,6 +305,23 @@ function isLoggedIn(req, res, next) {
 
     // if they aren't redirect them to the home page
     res.redirect('/login');
+}
+
+function getInformationOfUserAccount(req, res, next) {
+    let acc = req.params.userAccount;
+    console.log(req.params);
+    User.findOne({ account: acc }, (err, user) => {
+        if (err) throw err;
+        if (user) {
+            req.acc = user;
+            next();
+
+        } else {
+            res.render('pages/404');
+        }
+
+    });
+
 }
 
 module.exports = router;

@@ -7,6 +7,8 @@ const Post = require('../models/post');
 const User = require('../models/user');
 const Image = require('../models/image');
 const Comment = require('../models/comment');
+const Coversations = require('../models/conversations');
+const Message = require('../models/message');
 
 //connect to mongodb
 mongoose.connect(configDB.url, { useNewUrlParser: true }).then(
@@ -15,7 +17,14 @@ mongoose.connect(configDB.url, { useNewUrlParser: true }).then(
 );
 
 
+// empty the collection first
 
+Coversations.deleteMany()
+    .then()
+    .catch(err => console.log(err));
+Message.deleteMany()
+    .then()
+    .catch(err => console.log(err));
 
 // empty the collection first
 Post.deleteMany()
@@ -93,7 +102,7 @@ User.deleteMany()
                 avatar: faker.image.avatar(),
                 background: faker.image.nature(),
                 gender: Math.random() < 0.5 ? 'Male' : 'Female',
-                
+
             });
         }
         return User.create(users);

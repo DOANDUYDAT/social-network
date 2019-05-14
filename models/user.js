@@ -18,6 +18,10 @@ const userSchema = new Schema({
         city: String,
         country: String
     },
+    roomChat: [{
+        type: ObjectId,
+        ref: 'Conversation'
+    }],
     requestFriends: [{
         userId: { type: ObjectId, ref: 'User' },
         friendName: String,

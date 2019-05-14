@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
 
-const middle = require('./middleware/middleware');
+
 const passport = require('./config/passport');
 const configDB = require('./config/database');
 const routes = require('./routes');
@@ -70,15 +70,18 @@ function isLoggedIn(req, res, next) {
   // if they aren't redirect them to the home page
   res.redirect('/login');
 }
-app.get('/chat', middle.isLoggedIn, (req, res) => {
+// app.get('/chat', middle.isLoggedIn, (req, res) => {
 
-  res.render('pages/index', {
-    user: req.user
-  })
-});
+//   res.render('pages/index', {
+//     user: req.user
+//   })
+// });
 
 app.use('/', routes.home);
-app.use('/:userAccount', middle.isLoggedIn , middle.getInformationOfUserAccount, routes.users);
+app.use('/messages', routes.messages);
+app.use('/:userAccount', routes.users);
+
+
 
 // Route not found (404)
 app.use(function (req, res, next) {
@@ -88,15 +91,13 @@ app.use(function (req, res, next) {
 
 
 
-io.on('connection', function(socket){
-  console.log('an user connected');
+io.on('connection', function (socket) {
+
   socket.on('join', data => {
     socket.join(data.name);
     console.log(data.name);
   });
-  socket.on('msg', data => {
-    socket.broadcast.emit('msg', data);
-  });
+  
   socket.on('request friend', data => {
     socket.to(data.to).emit(data.to, {
       from: data.from,
@@ -106,19 +107,20 @@ io.on('connection', function(socket){
   socket.on('accept friend', data => {
     socket.to(data.to).emit(data.to, {
       from: data.from,
-      type: 'accept friend'
+      type: 'accept friend',
     })
   })
-  // socket.on('send-notifications', (data) => {
-  //   console.log(data);
-  //   socket.to(data.to).emit('receive-notifications', {
-  //     from: data.from, 
-  //     to: data.to,
-  //     type: data.type
-  //   })
-  // })
+  socket.on('message', data => {
+    // console.log(data.conversationId);
+    // console.log(data);
+    socket.to(data.conversationId).emit('reply', {
+      from: data.from,
+      composedMessage: data.composedMessage,
+      conversationId: data.conversationId
+    })
+  })
 
-  socket.on('disconnect', function(){
+  socket.on('disconnect', function () {
     console.log('user disconnected');
   });
 });

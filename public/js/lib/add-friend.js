@@ -6,8 +6,8 @@ const requestFriend = (e) => {
         const receiver = e.previousElementSibling.value;
         e.innerHTML = 'Loading';
         axios.post('/request-friend', {
-                to: receiver
-            })
+            to: receiver
+        })
             .then((res) => {
                 console.log(res.data);
             })
@@ -22,17 +22,17 @@ const requestFriend = (e) => {
             e.innerHTML = "Cancel";
         }, 500);
 
-    } else if (e.innerHTML === 'Cancel'){
+    } else if (e.innerHTML === 'Cancel') {
         e.innerHTML = 'Loading';
         setTimeout(() => {
             e.innerHTML = "Add Friend";
         }, 500);
     }
-    
+
 };
 
 const acceptFriend = (e) => {
-    
+
     const successNotify = e.previousElementSibling;
     const newFriend = e.nextElementSibling;
     const buttonDelete = newFriend.nextElementSibling;
@@ -40,18 +40,33 @@ const acceptFriend = (e) => {
     e.style.display = 'none';
     successNotify.style.display = 'inline';
     console.log(newFriend.value);
+    
+
     axios.post('/add-friend', {
         friend: newFriend.value,
         answer: 'yes',
     }).then(res => {
         console.log(res);
+        
     }).catch(err => {
         console.log(err);
     });
+
+    axios.post('/messages/t', {
+        recipient: newFriend.value,
+    }).then(res => {
+        console.log(res.data);
+        
+    }).catch(err => {
+        console.log(err);
+    });
+
     socket.emit('accept friend', {
         from: userAccount,
-        to: newFriend.value
-    })
+        to: newFriend.value,
+    });
+
+
 };
 
 const deleteFriend = (e) => {
