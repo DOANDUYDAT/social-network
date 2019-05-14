@@ -43,6 +43,8 @@
 
 // }
 
+
+
 function convertDateAndTime(dateAndTime) {
     const now = new Date();
     const timeOfMessage = new Date(dateAndTime);
@@ -102,22 +104,21 @@ btnSendMessage.addEventListener('keydown', e => {
 
 
 
-        // const url = '/messages/t/' + convertsationId.value;
-        // axios.post(url, {
-        //     composedMessage: reply.value
-        // }).then(res => {
-        //     console.log(res);
-        // }).catch(err => {
-        //     console.log(err);
-        // })
-        
+        const url = '/messages/t/' + conversationId.value;
+        axios.post(url, {
+            composedMessage: reply.value
+        }).then(res => {
+            console.log(res);
+            
+        }).catch(err => {
+            console.log(err);
+        })
         socket.emit('message', {
             composedMessage: reply.value,
             from: userAccount,
             conversationId: conversationId.value
         });
-        
-        
+
     }
 })
 
@@ -127,7 +128,7 @@ function sendReply(e) {
     const boxConversation = document.getElementById('box-conversation');
     // console.log(boxConversation);
     const parent = e.parentElement;
-    const conversationId = parent.previousElementSibling
+    const conversationId = parent.previousElementSibling;
     const reply = conversationId.previousElementSibling;
     // const reply = parent.previousElementSibling;
     // console.log(convertsationId.value);
@@ -138,11 +139,11 @@ function sendReply(e) {
         }
     }).then(res => {
         const message = document.createElement('li');
-        message.className = 'right';
+        message.className = 'left';
         let htmlCode = '';
         // const timeOfMessage = convertDateAndTime(message.createdAt);
         // htmlCode += '<li class="right">';
-        htmlCode += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm pull-right" />';
+        htmlCode += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm pull-left" />';
         htmlCode += '<div class="chat-item">';
         htmlCode += '<div class="chat-item-header">';
         htmlCode += '<h5>' + res.data.name.first + ' ' + res.data.name.last + '</h5>';
@@ -161,19 +162,51 @@ function sendReply(e) {
 
 
 
-    // const url = '/messages/t/' + convertsationId.value;
-    // axios.post(url, {
-    //     composedMessage: reply.value
-    // }).then(res => {
-    //     console.log(res);
-    // }).catch(err => {
-    //     console.log(err);
-    // })
-
+    const url = '/messages/t/' + conversationId.value;
+    axios.post(url, {
+        composedMessage: reply.value
+    }).then(res => {
+        console.log(res);
+        
+    }).catch(err => {
+        console.log(err);
+    })
     socket.emit('message', {
         composedMessage: reply.value,
         from: userAccount,
         conversationId: conversationId.value
     });
 
+
 }
+
+socket.on('reply', data => {
+    axios.get('/friend', {
+        params: {
+            key: data.from
+        }
+    }).then(res => {
+        const boxConversation = document.getElementById('box-conversation');
+        const message = document.createElement('li');
+        message.className = 'right';
+        let htmlCode = '';
+        // const timeOfMessage = convertDateAndTime(message.createdAt);
+
+        // htmlCode += '<li class="right">';
+        htmlCode += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm pull-right" />';
+        htmlCode += '<div class="chat-item">';
+        htmlCode += '<div class="chat-item-header">';
+        htmlCode += '<h5>' + res.data.name.first + ' ' + res.data.name.last + '</h5>';
+        htmlCode += '<small class="text-muted">seconds ago</small>';
+        htmlCode += '</div>';
+        htmlCode += '<p>' + data.composedMessage + '</p>';
+        htmlCode += '</div>';
+        // htmlCode += '</li>';
+        message.innerHTML = htmlCode;
+        // console.log(message);
+        boxConversation.appendChild(message);
+        // reply.value = '';
+    }).catch(err => {
+        console.log(err);
+    })
+})

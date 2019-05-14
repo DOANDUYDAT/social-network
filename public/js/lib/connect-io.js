@@ -10,7 +10,7 @@ const notifyMessages = document.getElementById('notify-messages');
 notifyFriend.addEventListener('click', (e) => {
     e.preventDefault();
     let spanOfNotify = notifyFriend.childNodes[0].firstElementChild;
-    if( spanOfNotify !== null) {
+    if (spanOfNotify !== null) {
         notifyFriend.childNodes[0].removeChild(spanOfNotify)
     }
 })
@@ -18,7 +18,7 @@ notifyFriend.addEventListener('click', (e) => {
 notifyNews.addEventListener('click', (e) => {
     e.preventDefault();
     let spanOfNotify = notifyNews.childNodes[0].firstElementChild;
-    if( spanOfNotify !== null) {
+    if (spanOfNotify !== null) {
         notifyNews.childNodes[0].removeChild(spanOfNotify)
     }
 })
@@ -26,19 +26,19 @@ notifyNews.addEventListener('click', (e) => {
 notifyMessages.addEventListener('click', (e) => {
     e.preventDefault();
     let spanOfNotify = notifyMessages.childNodes[0].firstElementChild;
-    if( spanOfNotify !== null) {
+    if (spanOfNotify !== null) {
         notifyMessages.childNodes[0].removeChild(spanOfNotify)
     }
 })
 
 socket.on('connect', data => {
-    axios.get('/friend',{
+    axios.get('/friend', {
         params: {
             key: userAccount
         }
     }).then(res => {
         console.log(res.data.roomChat)
-        res.data.roomChat.forEach( room => {
+        res.data.roomChat.forEach(room => {
             socket.emit('join', {
                 name: room
             })
@@ -120,7 +120,7 @@ socket.on('connect', data => {
                 let htmlCode = '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm" />';
                 htmlCode += '<a href="/' + res.data.account + '" class="profile-link">' + fullName + ' and you are friends</a>';
                 // htmlCode += '<p> and you are friends aaaaaaaaaaaaaaaaaaaaa</p>';
-                
+
                 newNotify.innerHTML = htmlCode;
 
                 listNotifications.append(newNotify);
@@ -159,7 +159,7 @@ socket.on('connect', data => {
             spanOfNotify.innerText = numberOfNotify;
         }
 
-        
+
         axios.get("/friend", {
             params: {
                 key: data.from,
@@ -167,6 +167,7 @@ socket.on('connect', data => {
         }).then(res => {
             // console.log(res.data);
             let newMessage = document.createElement('li');
+            newMessage.className = 'left';
             const listMessages = document.getElementById('list-messages');
             let fullName = res.data.name.first + ' ' + res.data.name.last;
 
@@ -175,16 +176,44 @@ socket.on('connect', data => {
             htmlCode += '<div class="contact">';
             htmlCode += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm pull-left" />';
             htmlCode += '<div class="msg-preview">';
-            htmlCode += '<h6>'+ fullName + '</h6>';
+            htmlCode += '<h6>' + fullName + '</h6>';
+            // if (data.composedMessage.length <= 20){
+            //     htmlCode += '<p class="text-muted">' + data.composedMessage + '</p>';
+            // } else {
+            //     htmlCode += '<p class="text-muted">' + data.composedMessage.split(' ').slice(0,5).join(' ') + '</p>'
+            // }
             htmlCode += '<p class="text-muted">' + data.composedMessage + '</p>';
             htmlCode += '</div>';
             htmlCode += '</div>';
             htmlCode += '</a>'
-            
-            
-            newMessage.innerHTML = htmlCode;
 
+            newMessage.innerHTML = htmlCode;
             listMessages.append(newMessage);
+
+            const url = 'http://localhost:5000/messages/t/';
+            const urlMessage = url + data.conversationId;
+            const urlAllConversations = 'http://localhost:5000/messages';
+            console.log(data.composedMessage);
+            if (window.location.href === urlMessage) {
+                const boxConversation = document.getElementById('box-conversation');
+                const message = document.createElement('li');
+                message.className = 'left';
+                let htmlCode = '';
+                // const timeOfMessage = convertDateAndTime(message.createdAt);
+                // htmlCode += '<li class="right">';
+                htmlCode += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm pull-left" />';
+                htmlCode += '<div class="chat-item">';
+                htmlCode += '<div class="chat-item-header">';
+                htmlCode += '<h5>' + res.data.name.first + ' ' + res.data.name.last + '</h5>';
+                htmlCode += '<small class="text-muted">seconds ago</small>';
+                htmlCode += '</div>';
+                htmlCode += '<p>' + data.composedMessage + '</p>';
+                htmlCode += '</div>';
+                // htmlCode += '</li>';
+                message.innerHTML = htmlCode;
+                // console.log(message);
+                boxConversation.appendChild(message);
+            } 
         }).catch(err => {
             console.log(err);
         })

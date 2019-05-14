@@ -69,7 +69,7 @@ exports.getConversation = function (req, res, next) {
   console.log(req.params.conversationId);
   Message.find({ conversationId: req.params.conversationId })
     .select('createdAt body author')
-    .sort('-createdAt')
+    .sort('createdAt')
     .populate({
       path: 'author',
       select: 'name.first name.last avatar account'
@@ -152,7 +152,7 @@ exports.sendReply = function (req, res, next) {
       res.send({ error: err });
       return next(err);
     }
-
+    console.log(sentReply);
     return res.status(200).json({ message: 'Reply successfully sent!' });
   });
 };
