@@ -6,9 +6,12 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const imageSchema = new Schema ({
     titile: String,
     url: String,
-    owner: String,
+    owner: {
+        type: ObjectId,
+        ref: 'User'
+    },
     date: { type: Date, default: Date.now },
-    album: String,
+    
 
 });
 

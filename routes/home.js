@@ -4,6 +4,8 @@ const multer = require('../config/multer');
 
 const middle = require('../middleware/middleware');
 const ChatController = require('../controllers/chat');
+const postController = require('../controllers/post');
+
 const passport = require('../config/passport');
 const User = require('../models/user');
 const Conversation = require('../models/conversations');
@@ -49,11 +51,14 @@ router.route('/signup')
         failureFlash: true // allow flash messages
     }));
 
-router.get('/', isLoggedIn, (req, res) => {
-    res.render('pages/newsfeeds', {
-        user: req.user
-    });
-});
+// router.get('/', isLoggedIn, postController.getPosts, (req, res) => {
+//     res.render('pages/newsfeeds', {
+//         user: req.user,
+//         posts: req.fullPosts
+//     })
+// });
+
+router.get('/', isLoggedIn, postController.getPosts);
 
 router.get('/search', isLoggedIn, (req, res) => {
     let userAccount = req.user.account;
@@ -127,7 +132,7 @@ router.post('/request-friend', isLoggedIn, (req, res) => {
 
 router.get('/friend', isLoggedIn, (req, res) => {
     const acc = req.query.key;
-    User.findOne({ "account": acc }, "account name avatar roomChat", (err, user) => {
+    User.findOne({ "account": acc }, (err, user) => {
         if (err) throw err;
         res.status(200).json(user);
     })
@@ -210,6 +215,8 @@ router.get('/photos', isLoggedIn, (req, res) => {
         user: req.user
     });
 });
+
+// router.get('/posts', isLoggedIn, postController.getPosts);
 
 router.get('/messages', isLoggedIn, ChatController.getConversations, (req, res) => {
     res.status(200).render('pages/messages', {

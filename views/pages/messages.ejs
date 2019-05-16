@@ -21,8 +21,11 @@
                 <div class="col-md-3 static">
                     <div class="profile-card">
                         <img src=<%= user.avatar %> alt="user" class="profile-photo" />
-                        <h5><a href="timeline.html" class="text-white">Sarah Cruiz</a></h5>
-                        <a href="#" class="text-white"><i class="ion ion-android-person-add"></i> 1,299 followers</a>
+                        <% if (user) { %>
+                        <h5><a href="/<%= user.account %>" class="text-white"><%= user.name.first %>
+                                <%= user.name.last%></a></h5>
+                        <% } %>
+                        
                     </div>
                     <!--profile card ends-->
                     <ul class="nav-news-feed">
@@ -120,7 +123,7 @@
 
                                     <% conversations.forEach( conver => { %>
 
-                                    <li>
+                                    <li id="conver-<%= conver.message[0].conversationId %>">
                                         <input type="hidden" value="<%= conver.message[0].conversationId %>" />
                                         <a href="/messages/t/<%= conver.message[0].conversationId %>">
                                             <div class="contact">
@@ -189,7 +192,7 @@
                                                                 <%= message.author.name.last %></h5>
                                                             <small
                                                                 class="text-muted"><%= message.timeOfMessage %></small>
-                                                            
+
                                                         </div>
                                                         <p><%= message.body %></p>
                                                     </div>
@@ -198,7 +201,7 @@
                                                 <% } %>
                                                 <% }) %>
                                                 <% } %>
-                                                
+
                                             </ul>
                                         </div>
                                     </div>

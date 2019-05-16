@@ -79,6 +79,7 @@ function isLoggedIn(req, res, next) {
 
 app.use('/', routes.home);
 app.use('/messages', routes.messages);
+app.use('/post', routes.posts);
 app.use('/:userAccount', routes.users);
 
 
@@ -90,14 +91,44 @@ app.use(function (req, res, next) {
 
 
 
-
+let userOnline = [];
 io.on('connection', function (socket) {
-
+  
   socket.on('join', data => {
     socket.join(data.name);
     console.log(data.name);
   });
-  
+
+  socket.on('join user', data => {
+    socket.join(data.name);
+    
+    // console.log(userOnline);
+    if( userOnline.length > 0) {
+      let flag = userOnline.find(user => {
+        return user === data.name
+      })
+      if (!flag) {
+        userOnline.push(data.name);
+      }
+    }
+    io.emit('a user connected', {
+      name: data.name
+    })  
+    socket.on('disconnect', function () {
+      io.emit('a user disconnected', {
+        name: data.name
+      })
+      userOnline = userOnline.filter(user => {
+        return user !== data.name
+      })
+    });
+    io.emit('list user online', {
+      listUserOnline: userOnline
+    })
+    
+  })
+  console.log(userOnline);
+
   socket.on('request friend', data => {
     socket.to(data.to).emit(data.to, {
       from: data.from,
@@ -120,7 +151,10 @@ io.on('connection', function (socket) {
     })
   })
 
-  socket.on('disconnect', function () {
-    console.log('user disconnected');
-  });
+  // socket.on('disconnect', function () {
+  //   io.emit('a user disconnected', {
+  //     name: data.name
+  //   })
+  // });
+
 });

@@ -19,7 +19,7 @@ const storagePost = multer.diskStorage({
 });
 
 // Init Upload
-const uploadAvatar = multer({
+exports.uploadAvatar = multer({
 	storage: storageAvatar,
 	limits: { fileSize: 1024 * 1024 },
 	fileFilter: function (req, file, cb) {
@@ -27,7 +27,7 @@ const uploadAvatar = multer({
 	}
 }).single('avatar');
 
-const uploadPost = multer({
+exports.uploadPost = multer({
 	storage: storagePost,
 	limits: { fileSize: 1024 * 1024 * 10 },
 	fileFilter: function (req, file, cb) {
@@ -51,8 +51,3 @@ function checkFileType(file, cb) {
 	}
 }
 
-
-module.exports = {
-	uploadAvatar: uploadAvatar,
-	uploadPost: uploadPost
-}

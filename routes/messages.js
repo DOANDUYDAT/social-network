@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 
 const middle = require('../middleware/middleware');
 const ChatController = require('../controllers/chat');
-const Message = require('../models/message');
+// const Message = require('../models/message');
 
 const router = express.Router();
 

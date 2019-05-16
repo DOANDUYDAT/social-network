@@ -5,16 +5,20 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const postSchema = new Schema({
     title: String,
-    owner: String,
+    owner: {
+        type: ObjectId,
+        ref: 'User'
+    },
     body: String,
-    image: [String],
-    comments: [ObjectId],
-    date: { type: Date, default: Date.now },
+    images: [String],
     hidden: Boolean,
     meta: {
         like: [String],
         dislike: [String]
     }
-});
+},
+    {
+        timestamps: true // Saves createdAt and updatedAt as dates. createdAt will be our timestamp.
+    });
 
 const Post = module.exports = mongoose.model('Post', postSchema);

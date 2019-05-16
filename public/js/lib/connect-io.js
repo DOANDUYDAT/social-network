@@ -46,9 +46,53 @@ socket.on('connect', data => {
     }).catch(err => {
         console.log(err);
     })
-    socket.emit('join', {
+    socket.emit('join user', {
         name: userAccount
     });
+    socket.on('list user online', data => {
+        console.log(data.listUserOnline);
+        axios.get('/friend', {
+            params: {
+                key: userAccount
+            }
+        })
+            .then(res => {
+                // const friendsList = res.data.friendsList;
+                // data.listUserOnline.forEach(userOnline => {
+                //     const flag = friendsList.find(user => {
+                //         console.log(user);
+                //         return user.friendAccount === userOnline;
+                //     })
+                //     if (flag) {
+                //         const friend = 'online-' + userOnline;
+                //         const friendOnline = document.getElementById(friend);
+                //         if (friendOnline) {
+                //             friendOnline.style.display = 'inline-block';
+                //         }
+                //     }
+                // })
+                console.log(res.data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        // console.log(JSON.parse(listFriend.innerHTML));
+        console.log(data.listUserOnline);
+    })
+    socket.on('a user connected', data => {
+        const friend = 'online-' + data.name;
+        const friendOnline = document.getElementById(friend);
+        if (friendOnline) {
+            friendOnline.style.display = 'inline-block';
+        }
+    })
+    socket.on('a user disconnected', data => {
+        const friend = 'online-' + data.name;
+        const friendOnline = document.getElementById(friend);
+        if (friendOnline) {
+            friendOnline.style.display = 'none';
+        }
+    })
     socket.on(userAccount, data => {
         if (data.type === 'request friend') {
             let spanOfNotify = notifyFriend.childNodes[0].firstElementChild;
@@ -213,9 +257,26 @@ socket.on('connect', data => {
                 message.innerHTML = htmlCode;
                 // console.log(message);
                 boxConversation.appendChild(message);
-            } 
+
+                const miniConversation = 'conver-' + data.conversationId;
+                const minBoxConversation = document.getElementById(miniConversation);
+                let htmlCodeForMiniConversation = '';
+                htmlCodeForMiniConversation += '<input type="hidden" value="' + data.conversationId + '" />';
+                htmlCodeForMiniConversation += '<a href="/messages/t/' + data.conversationId + '">';
+                htmlCodeForMiniConversation += '<div class="contact">';
+                htmlCodeForMiniConversation += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm pull-left" />';
+                htmlCodeForMiniConversation += '<div class="msg-preview">';
+                htmlCodeForMiniConversation += '<h6>' + res.data.name.first + ' ' + res.data.name.last + '</h6>';
+                htmlCodeForMiniConversation += '<p class="text-muted">' + data.composedMessage + '</p>';
+                htmlCodeForMiniConversation += '<small class="text-muted">' + convertTime() + '</small>';
+                htmlCodeForMiniConversation += '</div>';
+                htmlCodeForMiniConversation += '</div>';
+                htmlCodeForMiniConversation += '</a>';
+                minBoxConversation.innerHTML = htmlCodeForMiniConversation;
+            }
         }).catch(err => {
             console.log(err);
         })
     })
 })
+
