@@ -24,15 +24,30 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="profile-info">
+
+                                <!-- <img src="<%= acc.avatar %>" alt="" class="img-responsive profile-photo" /> -->
+                                <% if (user.account === acc.account) { %>
+                                <form action="/<%= user.account %>/avatar" method="POST" enctype="multipart/form-data">
+                                    <label for="input-avatar" style="cursor: pointer;"><img src="<%= acc.avatar %>"
+                                            alt="" class="img-responsive profile-photo" /></label>
+
+                                    <input type="file" id="input-avatar" name="avatar"
+                                        style="width: 0px; height: 0px; opacity: 0; position: absolute;" multiple
+                                        required />
+                                    <button class="btn-sm btn-info" type="submit">Update Avatar</button>
+                                </form>
+
+                                <% } else { %>
                                 <img src="<%= acc.avatar %>" alt="" class="img-responsive profile-photo" />
+                                <% } %>
                                 <h3><%= acc.name.first %> <%= acc.name.last%></h3>
-                                <p class="text-muted">Creative Director</p>
+                                <!-- <p class="text-muted">Creative Director</p> -->
                             </div>
                         </div>
                         <div class="col-md-9">
                             <ul class="list-inline profile-menu">
                                 <% if (acc) { %>
-                                <li><a href="/<%= acc.account%>/timeline" class="active">Timeline</a></li>
+                                <li><a href="/<%= acc.account%>" class="active">Timeline</a></li>
                                 <li><a href="/<%= acc.account%>/about">About</a></li>
                                 <li><a href="/<%= acc.account%>/albums">Album</a></li>
                                 <li><a href="/<%= acc.account%>/friends">Friends</a></li>
@@ -51,19 +66,19 @@
                 <div class="navbar-mobile hidden-lg hidden-md">
                     <div class="profile-info">
                         <img src="<%= acc.avatar %>" alt="" class="img-responsive profile-photo" />
-                        <h4>Sarah Cruiz</h4>
-                        <p class="text-muted">Creative Director</p>
+                        <h4><%= acc.name.first %> <%= acc.name.last%></h4>
+                        <!-- <p class="text-muted">Creative Director</p> -->
                     </div>
                     <div class="mobile-menu">
                         <ul class="list-inline">
                             <% if (acc) { %>
-                            <li><a href="/<%= acc.account%>/timeline" class="active">Timeline</a></li>
+                            <li><a href="/<%= acc.account%>" class="active">Timeline</a></li>
                             <li><a href="/<%= acc.account%>/about">About</a></li>
                             <li><a href="/<%= acc.account%>/albums">Album</a></li>
                             <li><a href="/<%= acc.account%>/friends">Friends</a></li>
                             <% } %>
                         </ul>
-                        <button class="btn-primary">Add Friend</button>
+                        <!-- <button class="btn-primary">Add Friend</button> -->
                     </div>
                 </div>
                 <!--Timeline Menu for Small Screens End-->
@@ -77,24 +92,30 @@
                         <!-- Post Create Box
                     ================================================= -->
                         <div class="create-post">
-                            <form action="/newsfeed" method="POST">
+                            <form action="/post/t" method="POST" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-md-7 col-sm-7">
                                         <div class="form-group">
-                                            <img src=<%= acc.avatar%> alt="" class="profile-photo-md" />
+                                            <img src="<%= user.avatar %>" alt="" class="profile-photo-md" />
                                             <textarea name="texts" id="exampleTextarea" cols="30" rows="1"
-                                                class="form-control" placeholder="Write what you wish"></textarea>
+                                                class="form-control" placeholder="Write what you wish"
+                                                required></textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-5 col-sm-5">
                                         <div class="tools">
                                             <ul class="publishing-tools list-inline">
                                                 <li><a href="#"><i class="ion-compose"></i></a></li>
-                                                <li><a href="#"><i class="ion-images"></i></a></li>
+                                                <li><a href="#">
+                                                        <label for="input-image"><i class="ion-images"></i></label>
+                                                        <input type="file" id="input-image" name="photos"
+                                                            style="width: 0px; height: 0px; opacity: 0; position: absolute;"
+                                                            multiple />
+                                                    </a></li>
                                                 <li><a href="#"><i class="ion-ios-videocam"></i></a></li>
                                                 <li><a href="#"><i class="ion-map"></i></a></li>
                                             </ul>
-                                            <button class="btn btn-primary pull-right">Publish</button>
+                                            <button class="btn btn-primary pull-right" type="submit">Publish</button>
                                         </div>
                                     </div>
                                 </div>
@@ -103,176 +124,75 @@
 
                         <!-- Post Content
                     ================================================= -->
+                        <% if(posts.length > 0) { %>
+                        <% posts.forEach(apost => { %>
                         <div class="post-content">
-
-                            <!--Post Date-->
-                            <div class="post-date hidden-xs hidden-sm">
-                                <h5>Sarah</h5>
-                                <p class="text-grey">Sometimes ago</p>
-                            </div>
-                            <!--Post Date End-->
-
-                            <img src="/images/post-images/12.jpg" alt="post-image" class="img-responsive post-image" />
+                            <img src="<%= apost.post.images[0] %>" alt="post-image" class="img-responsive post-image" />
                             <div class="post-container">
-                                <img src="/images/users/user-1.jpg" alt="user" class="profile-photo-md pull-left" />
+                                <img src="<%= apost.post.owner.avatar %>" alt="user"
+                                    class="profile-photo-md pull-left" />
                                 <div class="post-detail">
                                     <div class="user-info">
-                                        <h5><a href="timeline.html" class="profile-link">Sarah Cruiz</a> <span
+                                        <h5><a href="/<%= apost.post.owner.account %>"
+                                                class="profile-link"><%= apost.post.owner.name.first %>
+                                                <%= apost.post.owner.name.last %></a> <span
                                                 class="following">following</span></h5>
-                                        <p class="text-muted">Published a photo about 15 mins ago</p>
+                                        <p class="text-muted"><%= apost.timePost %></p>
                                     </div>
                                     <div class="reaction">
-                                        <a class="btn text-green"><i class="icon ion-thumbsup"></i> 13</a>
-                                        <a class="btn text-red"><i class="fa fa-thumbs-down"></i> 0</a>
+                                        <input type="hidden" value="<%= apost.post._id %>">
+                                        <a class="btn text-green" onclick="like(this)"><i
+                                                class="icon ion-thumbsup"><%= apost.post.meta.like.length %></i>
+                                        </a>
+                                        <a class="btn text-red" onclick="dislike(this)"><i
+                                                class="fa fa-thumbs-down"><%= apost.post.meta.dislike.length %></i>
+                                        </a>
+                                        <button class="btn-md" onclick="loadComments(this)">Comments</button>
                                     </div>
                                     <div class="line-divider"></div>
                                     <div class="post-text">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                                            non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                                        <p><%= apost.post.body %>
                                             <i class="em em-anguished"></i> <i class="em em-anguished"></i> <i
                                                 class="em em-anguished"></i></p>
                                     </div>
                                     <div class="line-divider"></div>
-                                    <div class="post-comment">
-                                        <img src="/images/users/user-11.jpg" alt="" class="profile-photo-sm" />
-                                        <p><a href="timeline.html" class="profile-link">Diana </a><i
-                                                class="em em-laughing"></i> Lorem ipsum dolor sit amet, consectetur
-                                            adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                                            aliqua. Ut enim ad minim veniam, quis nostrud </p>
+
+                                    <div id="list-comments-<%= apost.post._id %>">
+                                        <!-- <div class="post-comment">
+                                            <img src="/images/users/user-11.jpg" alt="" class="profile-photo-sm" />
+                                            <p><a href="timeline.html" class="profile-link">Diana </a><i
+                                                    class="em em-laughing"></i> Lorem ipsum dolor sit amet,
+                                                consectetur
+                                                adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                                                dolore magna
+                                                aliqua. Ut enim ad minim veniam, quis nostrud </p>
+                                        </div>
+                                        <div class="post-comment">
+                                            <img src="/images/users/user-4.jpg" alt="" class="profile-photo-sm" />
+                                            <p><a href="timeline.html" class="profile-link">John</a> Lorem ipsum
+                                                dolor sit
+                                                amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                                                ut
+                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                            </p>
+                                        </div> -->
                                     </div>
-                                    <div class="post-comment">
-                                        <img src="/images/users/user-4.jpg" alt="" class="profile-photo-sm" />
-                                        <p><a href="timeline.html" class="profile-link">John</a> Lorem ipsum dolor sit
-                                            amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud </p>
-                                    </div>
-                                    <div class="post-comment">
+
+                                    <!-- <div class="post-comment">
                                         <img src="/images/users/user-1.jpg" alt="" class="profile-photo-sm" />
                                         <input type="text" class="form-control" placeholder="Post a comment">
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
+                        <% }) %>
+                        <% } else { %>
+                        <h1>chua co bai dang</h1>
+                        <% } %>
 
-                        <!-- Post Content
-                    ================================================= -->
-                        <div class="post-content">
-
-                            <!--Post Date-->
-                            <div class="post-date hidden-xs hidden-sm">
-                                <h5>Sarah</h5>
-                                <p class="text-grey">10/22/2016</p>
-                            </div>
-                            <!--Post Date End-->
-
-                            <img src="/images/post-images/13.jpg" alt="post-image" class="img-responsive post-image" />
-                            <div class="post-container">
-                                <img src="/images/users/user-1.jpg" alt="user" class="profile-photo-md pull-left" />
-                                <div class="post-detail">
-                                    <div class="user-info">
-                                        <h5><a href="timeline.html" class="profile-link">Sarah Cruiz</a> <span
-                                                class="following">following</span></h5>
-                                        <p class="text-muted">Yesterday</p>
-                                    </div>
-                                    <div class="reaction">
-                                        <a class="btn text-green"><i class="icon ion-thumbsup"></i> 49</a>
-                                        <a class="btn text-red"><i class="fa fa-thumbs-down"></i> 0</a>
-                                    </div>
-                                    <div class="line-divider"></div>
-                                    <div class="post-text">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                                            non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                            <i class="em em-anguished"></i> <i class="em em-anguished"></i> <i
-                                                class="em em-anguished"></i></p>
-                                    </div>
-                                    <div class="line-divider"></div>
-                                    <div class="post-comment">
-                                        <img src="/images/users/user-11.jpg" alt="" class="profile-photo-sm" />
-                                        <p><a href="timeline.html" class="profile-link">Diana </a><i
-                                                class="em em-laughing"></i> Lorem ipsum dolor sit amet, consectetur
-                                            adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                                            aliqua. Ut enim ad minim veniam, quis nostrud </p>
-                                    </div>
-                                    <div class="post-comment">
-                                        <img src="/images/users/user-4.jpg" alt="" class="profile-photo-sm" />
-                                        <p><a href="timeline.html" class="profile-link">John</a> Lorem ipsum dolor sit
-                                            amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud </p>
-                                    </div>
-                                    <div class="post-comment">
-                                        <img src="/images/users/user-1.jpg" alt="" class="profile-photo-sm" />
-                                        <input type="text" class="form-control" placeholder="Post a comment">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Post Content
-                    ================================================= -->
-                        <div class="post-content">
-
-                            <!--Post Date-->
-                            <div class="post-date hidden-xs hidden-sm">
-                                <h5>Sarah</h5>
-                                <p class="text-grey">10/21/2016</p>
-                            </div>
-                            <!--Post Date End-->
-
-                            <div class="post-container">
-                                <img src="/images/users/user-1.jpg" alt="user" class="profile-photo-md pull-left" />
-                                <div class="post-detail">
-                                    <div class="user-info">
-                                        <h5><a href="timeline.html" class="profile-link">Sarah Cruiz</a> <span
-                                                class="following">following</span></h5>
-                                        <p class="text-muted">2 days ago</p>
-                                    </div>
-                                    <div class="reaction">
-                                        <a class="btn text-green"><i class="icon ion-thumbsup"></i> 49</a>
-                                        <a class="btn text-red"><i class="fa fa-thumbs-down"></i> 0</a>
-                                    </div>
-                                    <div class="line-divider"></div>
-                                    <div class="post-text">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                                            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                                            non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                            <i class="em em-anguished"></i> <i class="em em-anguished"></i> <i
-                                                class="em em-anguished"></i></p>
-                                    </div>
-                                    <div class="line-divider"></div>
-                                    <div class="post-comment">
-                                        <img src="/images/users/user-11.jpg" alt="" class="profile-photo-sm" />
-                                        <p><a href="timeline.html" class="profile-link">Diana </a><i
-                                                class="em em-laughing"></i> Lorem ipsum dolor sit amet, consectetur
-                                            adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                                            aliqua. Ut enim ad minim veniam, quis nostrud </p>
-                                    </div>
-                                    <div class="post-comment">
-                                        <img src="/images/users/user-4.jpg" alt="" class="profile-photo-sm" />
-                                        <p><a href="timeline.html" class="profile-link">John</a> Lorem ipsum dolor sit
-                                            amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud </p>
-                                    </div>
-                                    <div class="post-comment">
-                                        <img src="/images/users/user-1.jpg" alt="" class="profile-photo-sm" />
-                                        <input type="text" class="form-control" placeholder="Post a comment">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                     </div>
-                    <div class="col-md-2 static">
+                    <!-- <div class="col-md-2 static">
                         <div id="sticky-sidebar">
                             <h4 class="grey">Sarah's activity</h4>
                             <div class="feed-item">
@@ -300,7 +220,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -312,6 +232,7 @@
 
     <!-- script -->
     <% include ../partials/script %>
+    <script src="/js/lib/posts.js"></script>
 </body>
 
 </html>

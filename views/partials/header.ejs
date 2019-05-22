@@ -42,9 +42,11 @@
                         <li><a href="timeline-friends.html">Timeline Friends</a></li>
                     </ul>
                 </li> -->
-
-                <% if (user) { %>
                 <input type="text" value="<%= user.account %>" id="userAccount" hidden>
+                <input type="hidden" value="<%= user.avatar %>" id="userAvatar">
+                <input type="hidden" value="<%= user.name.first %> <%= user.name.last %>" id="userFullName">
+                <% if (user) { %>
+                
 
                 <li class="dropdown"><a href="/<%= user.account %>">Home</a></li>
                 <li class="dropdown"><a href="/">Newsfeed</a></li>

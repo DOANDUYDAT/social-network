@@ -20,10 +20,11 @@
               ================================================= -->
                 <div class="col-md-3 static">
                     <div class="profile-card">
-                        
+
                         <img src="<%= user.avatar %>" alt="user" class="profile-photo" />
                         <% if (user) { %>
-                        <h5><a href="/<%= user.account %>" class="text-white"><%= user.name.first %> <%= user.name.last%> </a></h5>
+                        <h5><a href="/<%= user.account %>" class="text-white"><%= user.name.first %>
+                                <%= user.name.last%> </a></h5>
                         <% } %>
                         <!-- <a href="#" class="text-white"><i class="ion ion-android-person-add"></i> 1,299 followers</a> -->
                     </div>
@@ -89,28 +90,38 @@
                     <% result.forEach( friend =>  { %>
                     <% if (friend.account !== user.account) { %>
                     <!-- <form> -->
-                        <div class="row">
-                            <div class="col-md-7 col-sm-7">
-                                <div class="form-group">
-                                    <img src="<%= friend.avatar %>" alt="" class="profile-photo" />
-                                    <a href="/<%= friend.account %>"
-                                        class="profile-link">&nbsp;&nbsp;&nbsp;<%= friend.name.first %>
-                                        <%= friend.name.last%></a>
-                                    <hr>
-                                </div>
-                            </div>
-                            <div class="col-md-5 col-sm-5">
-                                
-                                <input type="hidden" value="<%= friend.account %>" >
-                                <button class=" btn-primary pull-right" id="ddd3" onclick="requestFriend(this)" >Add Friend</button>
-                                
+                    <div class="row">
+                        <div class="col-md-7 col-sm-7">
+                            <div class="form-group">
+                                <img src="<%= friend.avatar %>" alt="" class="profile-photo" />
+                                <a href="/<%= friend.account %>"
+                                    class="profile-link">&nbsp;&nbsp;&nbsp;<%= friend.name.first %>
+                                    <%= friend.name.last%></a>
+                                <hr>
                             </div>
                         </div>
+                        <% if (user.friendsList.find(afriend => { return afriend.friendAccount === friend.account })) { %>
+                        <div class="col-md-5 col-sm-5">
+
+                            <input type="hidden" value="<%= friend.account %>">
+                            <button class=" btn-primary pull-right">Friends</button>
+
+                        </div>
+                        <% } else { %>
+                        <div class="col-md-5 col-sm-5">
+
+                            <input type="hidden" value="<%= friend.account %>">
+                            <button class=" btn-primary pull-right" onclick="requestFriend(this)">Add Friend</button>
+
+                        </div>
+                        <% } %>
+
+                    </div>
                     <!-- </form> -->
                     <% } %>
                     <% }) %>
                 </div>
-                
+
                 <!-- Newsfeed Common Side Bar Right
               ================================================= -->
                 <div class="col-md-2 static">
@@ -161,7 +172,7 @@
 
     <!-- script -->
     <% include ../partials/script %>
-    
+
 </body>
 
 </html>

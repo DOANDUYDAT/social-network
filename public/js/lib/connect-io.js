@@ -2,6 +2,8 @@ const socket = io();
 
 
 const userAccount = document.getElementById('userAccount').value;
+const userAvatar = document.getElementById('userAvatar').value;
+const userFullName = document.getElementById('userFullName').value;
 const notifyFriend = document.getElementById('notify-friends');
 const notifyNews = document.getElementById('notify-news');
 const notifyMessages = document.getElementById('notify-messages');
@@ -37,7 +39,7 @@ socket.on('connect', data => {
             key: userAccount
         }
     }).then(res => {
-        console.log(res.data.roomChat)
+        // console.log(res.data.roomChat)
         res.data.roomChat.forEach(room => {
             socket.emit('join', {
                 name: room
@@ -50,34 +52,34 @@ socket.on('connect', data => {
         name: userAccount
     });
     socket.on('list user online', data => {
-        console.log(data.listUserOnline);
+        // console.log(data.listUserOnline);
         axios.get('/friend', {
             params: {
                 key: userAccount
             }
         })
             .then(res => {
-                // const friendsList = res.data.friendsList;
-                // data.listUserOnline.forEach(userOnline => {
-                //     const flag = friendsList.find(user => {
-                //         console.log(user);
-                //         return user.friendAccount === userOnline;
-                //     })
-                //     if (flag) {
-                //         const friend = 'online-' + userOnline;
-                //         const friendOnline = document.getElementById(friend);
-                //         if (friendOnline) {
-                //             friendOnline.style.display = 'inline-block';
-                //         }
-                //     }
-                // })
-                console.log(res.data);
+                const friendsList = res.data.friendsList;
+                data.listUserOnline.forEach(userOnline => {
+                    const flag = friendsList.find(user => {
+                        // console.log(user);
+                        return user.friendAccount === userOnline;
+                    })
+                    if (flag) {
+                        const friend = 'online-' + userOnline;
+                        const friendOnline = document.getElementById(friend);
+                        if (friendOnline) {
+                            friendOnline.style.display = 'inline-block';
+                        }
+                    }
+                })
+                // console.log(res.data);
             })
             .catch(err => {
                 console.log(err);
             })
         // console.log(JSON.parse(listFriend.innerHTML));
-        console.log(data.listUserOnline);
+        // console.log(data.listUserOnline);
     })
     socket.on('a user connected', data => {
         const friend = 'online-' + data.name;
@@ -148,7 +150,7 @@ socket.on('connect', data => {
                 spanOfNotify.innerText = numberOfNotify;
             }
 
-            console.log(data);
+            // console.log(data);
 
             let newNotify = document.createElement('li');
 
@@ -173,23 +175,49 @@ socket.on('connect', data => {
             })
 
         } else if (data.type === "news") {
-            // let spanOfNotify = notifyNews.childNodes[0].firstElementChild;
-            // if (spanOfNotify === null) {
-            //     let spanElement = document.createElement('span');
-            //     spanElement.className = "badge badge-pill badge-light";
-            //     spanElement.style.background = "red";
-            //     spanElement.style.fontSize = "13px";
-            //     spanElement.innerText = 1;
-            //     notifyNews.childNodes[0].appendChild(spanElement);
-            // } else {
-            //     let numberOfNotify = Number(spanOfNotify.innerText) + 1;
-            //     spanOfNotify.innerText = numberOfNotify;
-            // }
-            // let messageNotify = document.createElement('li');
+            let spanOfNotify = notifyNews.childNodes[0].firstElementChild;
+            if (spanOfNotify === null) {
+                let spanElement = document.createElement('span');
+                spanElement.className = "badge badge-pill badge-light";
+                spanElement.style.background = "red";
+                spanElement.style.fontSize = "13px";
+                spanElement.innerText = 1;
+                notifyNews.childNodes[0].appendChild(spanElement);
+            } else {
+                let numberOfNotify = Number(spanOfNotify.innerText) + 1;
+                spanOfNotify.innerText = numberOfNotify;
+            }
+            console.log(data.postId);
+            axios.get("/friend", {
+                params: {
+                    key: data.from,
+                }
+            }).then(res => {
+                // console.log(res.data);
+                const listNotifications = document.getElementById('list-notifications');
+                let newNotify = document.createElement('li');
+                let fullName = res.data.name.first + ' ' + res.data.name.last;
+                let htmlCode = '';
+                htmlCode += '<a href="/post/t/"' + data.postId + '>';
+                htmlCode += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm" />';
+                htmlCode += '<div>';
+                htmlCode += '<a href="/' + res.data.account + '" class="profile-link">' + fullName + '</a>';                
+
+                if (data.content === 'new comment') {
+                    htmlCode += '<p class="text-mtued">commented your post</p>';
+                }
+                htmlCode += '</div>';
+                htmlCode += '</a>'
+                newNotify.innerHTML = htmlCode;
+
+                listNotifications.append(newNotify);
+            }).catch(err => {
+                console.log(err);
+            })
         }
     });
     socket.on('reply', data => {
-        console.log(data);
+        // console.log(data);
         let spanOfNotify = notifyMessages.childNodes[0].firstElementChild;
         if (spanOfNotify === null) {
             let spanElement = document.createElement('span');
@@ -237,7 +265,7 @@ socket.on('connect', data => {
             const url = 'http://localhost:5000/messages/t/';
             const urlMessage = url + data.conversationId;
             const urlAllConversations = 'http://localhost:5000/messages';
-            console.log(data.composedMessage);
+            // console.log(data.composedMessage);
             if (window.location.href === urlMessage) {
                 const boxConversation = document.getElementById('box-conversation');
                 const message = document.createElement('li');

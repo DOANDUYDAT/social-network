@@ -52,7 +52,13 @@
                     <div id="chat-block">
                         <div class="title">Chat online</div>
                         <ul class="online-users list-inline">
-                            <li><a href="newsfeed-messages.html" title="Linda Lohan"><img src="/images/users/user-2.jpg"
+                                <% user.friendsList.forEach(friend => { %>
+                                    <li id="online-<%= friend.friendAccount%>" style="display: none;"><a
+                                            href="/<%= friend.userId %>" title="<%= friend.friendName%>"><img
+                                                src="<%= friend.friendAvatar %>" alt="user"
+                                                class="img-responsive profile-photo" /><span class="online-dot"></span></a></li>
+                                    <% }) %>
+                            <!-- <li><a href="newsfeed-messages.html" title="Linda Lohan"><img src="/images/users/user-2.jpg"
                                         alt="user" class="img-responsive profile-photo" /><span
                                         class="online-dot"></span></a></li>
                             <li><a href="newsfeed-messages.html" title="Sophia Lee"><img src="/images/users/user-3.jpg"
@@ -78,7 +84,7 @@
                                         class="online-dot"></span></a></li>
                             <li><a href="newsfeed-messages.html" title="Julia Cox"><img src="/images/users/user-10.jpg"
                                         alt="user" class="img-responsive profile-photo" /><span
-                                        class="online-dot"></span></a></li>
+                                        class="online-dot"></span></a></li> -->
                         </ul>
                     </div>
                     <!--chat block ends-->
@@ -215,7 +221,7 @@
                                             id="input-send-message" />
                                         <input type="hidden" value="<%= conversationId %>">
                                         <span class="input-group-btn">
-                                            <button class="btn btn-primary" type="button"
+                                            <button class="btn btn-info" type="button"
                                                 onclick="sendReply(this)">Send</button>
                                         </span>
                                     </div>
@@ -229,7 +235,7 @@
 
                     <% } else { %>
                     <div class="chat-room">
-                        <h1>b</h1>
+                        <h1>chua ket ban</h1>
                     </div>
 
                     <% } %>

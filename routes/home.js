@@ -17,10 +17,11 @@ router.use(bodyParser.json());
 router.route('/login')
     .get((req, res, next) => {
         if (req.isUnauthenticated()) {
-            res.render('pages/login', {
-                message: req.flash('loginMessage')
-            });
-        } else {
+        res.render('pages/login', {
+            message: req.flash('loginMessage')
+        });
+        } 
+        else {
             res.redirect('/');
         }
 
@@ -164,7 +165,7 @@ router.post('/add-friend', isLoggedIn, (req, res) => {
                 });
                 user.save((err) => {
                     if (err) throw err;
-
+                    
                 })
             }
         })
@@ -179,12 +180,12 @@ router.post('/add-friend', isLoggedIn, (req, res) => {
             });
             user.save((err) => {
                 if (err) throw err;
-
+                res.json('accept add friend');
             })
         })
-        // res.status(200).end('accept request');
+   
     }
-    if (answer === 'no') {
+    else if (answer === 'no') {
         User.findOne({ 'account': acc }, (err, user) => {
             if (err) throw err;
             user.requestFriends = user.requestFriends.filter(friend => {
@@ -192,16 +193,12 @@ router.post('/add-friend', isLoggedIn, (req, res) => {
             })
             user.save((err) => {
                 if (err) throw err;
-
+                res.json('cancel add friend');
             })
         })
-        // res.status(200).end('delete request');
+        
     }
-    // else {
-    //     res.status(200).end();
-    // }
-    // res.status(200).end();
-
+    
 });
 
 router.get('/friends', isLoggedIn, (req, res) => {
@@ -243,35 +240,21 @@ router.get('/logout', isLoggedIn, (req, res) => {
     res.redirect('/login');
 });
 
-router.get('/:userAccount', isLoggedIn, (req, res) => {
-    let acc = req.params.userAccount;
-    User.findOne({ account: acc }, (err, user) => {
-        if (err) throw err;
-        if (user) {
-            res.render('pages/timeline', {
-                acc: user,
-                user: req.user
-            })
-        } else {
-            res.render('pages/404');
-        }
-    });
-
-});
+router.get('/:userAccount', isLoggedIn, postController.getPost);
 
 
 
-router.route('/:userAccount/timeline')
-    .get(isLoggedIn, getInformationOfUserAccount, (req, res, next) => {
-        console.log(req.params);
-        res.render('pages/timeline', {
-            user: req.user,
-            acc: req.acc
-        });
-    })
-    .post(multer.uploadAvatar, (req, res, next) => {
+// router.route('/:userAccount/timeline')
+//     .get(isLoggedIn, getInformationOfUserAccount, (req, res, next) => {
+//         console.log(req.params);
+//         res.render('pages/timeline', {
+//             user: req.user,
+//             acc: req.acc
+//         });
+//     })
+//     .post(multer.uploadAvatar, (req, res, next) => {
 
-    })
+//     })
 
 router.get('/:userAccount/about', isLoggedIn, getInformationOfUserAccount, (req, res) => {
     res.render('pages/about', {
@@ -279,12 +262,99 @@ router.get('/:userAccount/about', isLoggedIn, getInformationOfUserAccount, (req,
         acc: req.acc
     });
 });
+router.post('/:userAccount/about', isLoggedIn, getInformationOfUserAccount, (req, res) => {
+    User.findOne({ email: req.user.email }, (err, user) => {
+        user.name.first = req.body.firstname;
+        user.name.last = req.body.lastname;
+        user.DOB.day = req.body.day;
+        user.DOB.month = req.body.month;
+        user.DOB.year = req.body.year;
+        user.address.city = req.body.city;
+        user.address.country = req.body.country;
+        user.gender = req.body.optgender;
+        user.about = req.body.information;
+
+        user.save(err => {
+            if (err) throw err;
+            res.redirect('/' + req.user.account + '/about');
+        })
+    })
+});
+
+
+router.post('/:userAccount/avatar', isLoggedIn, getInformationOfUserAccount, multer.uploadAvatar, (req, res) => {
+    console.log(req.body);
+    console.log(req.file);
+    User.findOne({ email: req.user.email }, (err, user) => {
+        if (err) throw err;
+        if (req.file) {
+            user.avatar = '/uploads/avatars/' + req.file.filename;
+            user.save((err, user) => {
+                if (err) throw err;
+                res.redirect('/' + req.user.account);
+            })
+        } else {
+            res.redirect('/' + req.user.account);
+        }
+
+    })
+})
+
 
 router.get('/:userAccount/change-password', isLoggedIn, getInformationOfUserAccount, (req, res) => {
     res.render('pages/change-password', {
         user: req.user,
-        acc: req.acc
+        acc: req.acc,
+        message: ''
     });
+});
+
+router.post('/:userAccount/change-password', isLoggedIn, getInformationOfUserAccount, (req, res) => {
+    req.flash('errorConfirm', "Mật khẩu xác thực không đúng");
+    req.flash('errorNewPass', "Mật khẩu mới đã được sử dụng trước đó");
+    req.flash('errorOldPass', "Mật khẩu không đúng");
+    req.flash('changeSuccess', "Mật khẩu đã được thay đổi");
+    console.log(req.body);
+    User.findOne({ email: req.user.email }, (err, user) => {
+        if (err) throw err;
+        if (!user.validPassword(req.body.password)) {
+            res.render('pages/change-password', {
+                user: req.user,
+                acc: req.acc,
+                message: req.flash("errorOldPass"),
+            })
+        } else {
+            if (user.validPassword(req.body.newPassword)) {
+                res.render('pages/change-password', {
+                    user: req.user,
+                    acc: req.acc,
+                    message: req.flash("errorNewPass"),
+                })
+            } else {
+                if (req.body.newPassword !== req.body.retypeNewPassword) {
+                    res.render('pages/change-password', {
+                        user: req.user,
+                        acc: req.acc,
+                        message: req.flash("errorConfirm"),
+                    })
+                } else {
+                    // console.log(req.body.password);
+                    user.password = user.generateHash(req.body.newPassword);
+                    user.save((err, newUser) => {
+                        if (err) throw err;
+                        console.log(newUser);
+                        res.render('pages/change-password', {
+                            user: req.user,
+                            acc: req.acc,
+                            message: req.flash("changeSuccess"),
+                        })
+                    })
+
+                }
+            }
+        }
+    })
+    // res.end();
 });
 
 router.get('/:userAccount/albums', isLoggedIn, getInformationOfUserAccount, (req, res) => {

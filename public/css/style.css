@@ -479,14 +479,16 @@ textarea{
 
 #list-notifications li {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 1fr 3fr;
   max-width: 450px;
   list-style: none;
   padding: 5px 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   word-wrap: break-word;
 }
-
+/* #list-notifications li  {
+  display: inline-block;
+} */
 
 /*For Homepage Header | Display on Scroll*/
 
@@ -1331,7 +1333,12 @@ ul.online-users li span.online-dot{
   margin: 7px 0;
   min-width: 0;
 }
-
+.post-content .post-container .post-detail .post-comment button {
+  height: auto;
+  margin: auto;
+  /* position: relative;
+  top: 10%; */
+}
 
 /*==================================================
   Nearby People CSS

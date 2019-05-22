@@ -10,6 +10,7 @@ const flash = require('connect-flash');
 const passport = require('./config/passport');
 const configDB = require('./config/database');
 const routes = require('./routes');
+const Post = require('./models/post');
 
 
 const port = 5000;
@@ -77,6 +78,12 @@ function isLoggedIn(req, res, next) {
 //   })
 // });
 
+app.use(function(req, res, next) {
+  console.log(typeof req.next);
+
+  next();
+});
+
 app.use('/', routes.home);
 app.use('/messages', routes.messages);
 app.use('/post', routes.posts);
@@ -110,6 +117,8 @@ io.on('connection', function (socket) {
       if (!flag) {
         userOnline.push(data.name);
       }
+    } else {
+      userOnline.push(data.name);
     }
     io.emit('a user connected', {
       name: data.name
@@ -127,7 +136,7 @@ io.on('connection', function (socket) {
     })
     
   })
-  console.log(userOnline);
+  // console.log(userOnline);
 
   socket.on('request friend', data => {
     socket.to(data.to).emit(data.to, {
@@ -151,6 +160,24 @@ io.on('connection', function (socket) {
     })
   })
 
+  socket.on('new comment', data => {
+    Post.findOne({_id: data.postId })
+      .populate({
+        path: 'owner',
+        select: 'account'
+      })
+      .exec((err, post) => {
+        if(err) throw err;
+        if (post.owner.account !== data.from) {
+          socket.to(post.owner.account).emit(post.owner.account, {
+            type: 'news',
+            content: 'new comment',
+            from: data.from,
+            postId: data.postId
+          })
+        }
+      })
+  })
   // socket.on('disconnect', function () {
   //   io.emit('a user disconnected', {
   //     name: data.name

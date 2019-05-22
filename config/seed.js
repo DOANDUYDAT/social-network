@@ -25,6 +25,12 @@ Coversations.deleteMany()
 Message.deleteMany()
     .then()
     .catch(err => console.log(err));
+Comment.deleteMany()
+    .then()
+    .catch(err => console.log(err));
+Post.deleteMany()
+    .then()
+    .catch(err => console.log(err));
 
 // empty the collection first
 // Post.deleteMany()
