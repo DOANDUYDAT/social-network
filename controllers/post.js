@@ -16,7 +16,9 @@ exports.getPosts = (req, res, next) => {
     let i = 0;
     listOfPost.forEach(onwerPost => {
         console.log(onwerPost);
-        Post.find({ owner: onwerPost })
+        Post.find({
+                owner: onwerPost
+            })
             .sort('-createdAt')
             .limit(2)
             .populate({
@@ -28,12 +30,15 @@ exports.getPosts = (req, res, next) => {
                 if (posts.length > 0) {
                     posts.forEach(post => {
                         const timePost = new Date(post.createdAt).toLocaleString();
-                        const apost = { post: post, timePost: timePost };
+                        const apost = {
+                            post: post,
+                            timePost: timePost
+                        };
                         fullPosts.push(apost);
                         console.log(fullPosts);
                     })
                 }
-                
+
                 i += 1;
                 console.log(i);
                 if (i === listOfPost.length) {
@@ -50,10 +55,14 @@ exports.getPosts = (req, res, next) => {
 exports.getPost = (req, res, next) => {
     let acc = req.params.userAccount;
     let fullPosts = [];
-    User.findOne({ account: acc }, (err, user) => {
+    User.findOne({
+        account: acc
+    }, (err, user) => {
         if (err) throw err;
         if (user) {
-            Post.find({ owner: user._id })
+            Post.find({
+                    owner: user._id
+                })
                 .sort('-createdAt')
                 .populate({
                     path: 'owner',
@@ -64,7 +73,10 @@ exports.getPost = (req, res, next) => {
                         posts.forEach(post => {
                             // console.log(post);
                             const timePost = new Date(post.createdAt).toLocaleString();
-                            const apost = { post: post, timePost: timePost };
+                            const apost = {
+                                post: post,
+                                timePost: timePost
+                            };
                             fullPosts.push(apost);
 
                         })
@@ -87,7 +99,9 @@ exports.getNumberLike = (req, res, next) => {
     const postId = req.query.postId;
     // console.log(req.params);
     // console.log(req.query);
-    Post.findOne({ _id: postId }, (err, post) => {
+    Post.findOne({
+        _id: postId
+    }, (err, post) => {
         if (err) throw err;
         // console.log(post);
 
@@ -121,7 +135,9 @@ exports.getNumberDislike = (req, res, next) => {
     const postId = req.query.postId;
     // console.log(req.params);
     // console.log(req.query);
-    Post.findOne({ _id: postId }, (err, post) => {
+    Post.findOne({
+        _id: postId
+    }, (err, post) => {
         if (err) throw err;
         // console.log(post);
 
@@ -187,15 +203,50 @@ exports.newComment = (req, res, next) => {
 exports.loadComments = (req, res, next) => {
     // console.log(req.params);
     const postId = req.params.postId;
-    Comment.find({postId: postId})
+    Comment.find({
+            postId: postId
+        })
         .populate({
             path: 'owner',
             select: 'avatar account name.first name.last'
         })
         .exec((err, comments) => {
-            if(err) throw err;
+            if (err) throw err;
             res.json(comments);
         })
 
-    
+
+}
+
+exports.getParticularPost = (req, res, next) => {
+    const postId = req.params.postId;
+    Post.findOne({
+            _id: postId
+        })
+        .populate({
+            path: 'owner',
+            select: 'name.first name.last avatar account'
+        })
+        .exec((err, post) => {
+            if (err) throw err;
+            Comment.find({
+                    postId: postId
+                })
+                .populate({
+                    path: 'owner',
+                    select: 'avatar account name.first name.last'
+                })
+                .exec((err, comments) => {
+                    if (err) throw err;
+                    const timePost = new Date(post.createdAt).toLocaleString();
+                    console.log(comments);
+                    res.render('pages/post', {
+                        comments: comments,
+                        post: post,
+                        timePost: timePost,
+                        user: req.user
+                    });
+                })
+
+        })
 }

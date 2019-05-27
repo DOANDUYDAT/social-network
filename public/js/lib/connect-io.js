@@ -198,7 +198,7 @@ socket.on('connect', data => {
                 let newNotify = document.createElement('li');
                 let fullName = res.data.name.first + ' ' + res.data.name.last;
                 let htmlCode = '';
-                htmlCode += '<a href="/post/t/"' + data.postId + '>';
+                htmlCode += '<a href="/post/t/' + data.postId + '">';
                 htmlCode += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm" />';
                 htmlCode += '<div>';
                 htmlCode += '<a href="/' + res.data.account + '" class="profile-link">' + fullName + '</a>';                

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../partials/head %>
+    <title>News Feed | Check what your friends are doing</title>
+</head>
+
+<body>
+    <header id="header">
+        <% include ../partials/header %>
+    </header>
+
+    <!-- main -->
+    <div id="page-contents">
+        <div class="container">
+            <div class="row">
+
+                <!-- Newsfeed Common Side Bar Left
+              ================================================= -->
+                <div class="col-md-3 static">
+                    <div class="profile-card">
+                        <img src="<%= user.avatar %>" alt="user" class="profile-photo" />
+                        <% if (user) { %>
+                        <h5><a href="/<%= user.account %>" class="text-white"><%= user.name.first %>
+                                <%= user.name.last%></a></h5>
+                        <% } %>
+                        <!-- <a href="#" class="text-white"><i class="ion ion-android-person-add"></i> 1,299 followers</a> -->
+                    </div>
+                    <!--profile card ends-->
+                    <ul class="nav-news-feed">
+                        <li><i class="icon ion-ios-paper"></i>
+                            <div><a href="/">My Newsfeed</a></div>
+                        </li>
+                        <li><i class="icon ion-ios-people"></i>
+                            <div><a href="#">People Nearby</a></div>
+                        </li>
+                        <li><i class="icon ion-ios-people-outline"></i>
+                            <div><a href="/friends">Friends</a></div>
+                        </li>
+                        <li><i class="icon ion-chatboxes"></i>
+                            <div><a href="/messages">Messages</a></div>
+                        </li>
+                        <li><i class="icon ion-images"></i>
+                            <div><a href="/photos">Images</a></div>
+                        </li>
+                        <li><i class="icon ion-ios-videocam"></i>
+                            <div><a href="#">Videos</a></div>
+                        </li>
+                    </ul>
+                    <!--news-feed links ends-->
+                    <div id="chat-block">
+                        <div class="title">Chat online</div>
+                        <p hidden id="list-friend-online"><%= user.friendsList %></p>
+                        <ul class="online-users list-inline">
+                            <% user.friendsList.forEach(friend => { %>
+                            <li id="online-<%= friend.friendAccount%>" style="display: none;"><a
+                                    href="/<%= friend.userId %>" title="<%= friend.friendName%>"><img
+                                        src="<%= friend.friendAvatar %>" alt="user"
+                                        class="img-responsive profile-photo" /><span class="online-dot"></span></a></li>
+                            <% }) %>
+
+                        </ul>
+                    </div>
+                    <!--chat block ends-->
+                </div>
+                <div class="col-md-7">
+
+                    <!-- Post Create Box
+                ================================================= -->
+                    <!-- <div class="create-post">
+                        <form action="/post/t" method="POST" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-7 col-sm-7">
+                                    <div class="form-group">
+                                        <img src="<%= user.avatar %>" alt="" class="profile-photo-md" />
+                                        <textarea name="texts" id="exampleTextarea" cols="30" rows="1"
+                                            class="form-control" placeholder="Write what you wish" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5">
+                                    <div class="tools">
+                                        <ul class="publishing-tools list-inline">
+                                            <li><a href="#"><i class="ion-compose"></i></a></li>
+                                            <li><a href="#">
+                                                    <label for="input-image"><i class="ion-images"></i></label>
+                                                    <input type="file" id="input-image" name="photos"
+                                                        style="width: 0px; height: 0px; opacity: 0; position: absolute;"
+                                                        multiple />
+                                                </a></li>
+                                            <li><a href="#"><i class="ion-ios-videocam"></i></a></li>
+                                            <li><a href="#"><i class="ion-map"></i></a></li>
+                                        </ul>
+                                        <button class="btn btn-primary pull-right" type="submit">Publish</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div> -->
+                    <!-- Post Create Box End-->
+
+                    <!-- Post Content
+                ================================================= -->
+
+
+                    <div class="post-content">
+                        <img src="<%= post.images[0] %>" alt="post-image" class="img-responsive post-image" />
+                        <div class="post-container">
+                            <img src="<%= post.owner.avatar %>" alt="user" class="profile-photo-md pull-left" />
+                            <div class="post-detail">
+                                <div class="user-info">
+                                    <h5><a href="<%= post.owner.account %>"
+                                            class="profile-link"><%= post.owner.name.first %>
+                                            <%= post.owner.name.last %></a> <span class="following">following</span>
+                                    </h5>
+                                    <p class="text-muted"><%= timePost %></p>
+                                </div>
+                                <div class="reaction">
+                                    <input type="hidden" value="<%= post._id %>">
+                                    <a class="btn text-green" onclick="like(this)"><i
+                                            class="icon ion-thumbsup"><%= post.meta.like.length %></i>
+                                    </a>
+                                    <a class="btn text-red" onclick="dislike(this)"><i
+                                            class="fa fa-thumbs-down"><%= post.meta.dislike.length %></i>
+                                    </a>
+                                    <!-- <button class="btn-md" onclick="loadComments(this)">Comments</button> -->
+                                </div>
+
+                                <div class="line-divider"></div>
+                                <div class="post-text">
+                                    <p><%= post.body %> <i class="em em-anguished"></i> <i class="em em-anguished"></i>
+                                        <i class="em em-anguished"></i></p>
+                                </div>
+                                <div class="line-divider"></div>
+
+                                <div id="list-comments-<%= post._id %>">
+                                    <% if(comments.length > 0) { %>
+                                    <% comments.forEach( comment => { %>
+                                    <div class="post-comment">
+                                        <img src="<%= comment.owner.avatar %>" alt="" class="profile-photo-sm" />
+                                        <p><a href="/<%= comment.owner.account %>" class="profile-link"><%= comment.owner.name.first %> <%= comment.owner.name.last %></a><i
+                                                class="em em-laughing"></i><%= comment.body %></p>
+                                    </div>
+                                    <% }) %>
+                                    <% } %>
+                                    <!-- <div class="post-comment">
+                                        <img src="images/users/user-11.jpg" alt="" class="profile-photo-sm" />
+                                        <p><a href="timeline.html" class="profile-link">Diana </a><i
+                                                class="em em-laughing"></i> Lorem ipsum dolor sit amet, consectetur
+                                            adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                                            aliqua. Ut enim ad minim veniam, quis nostrud </p>
+                                    </div>
+                                    <div class="post-comment">
+                                        <img src="images/users/user-4.jpg" alt="" class="profile-photo-sm" />
+                                        <p><a href="timeline.html" class="profile-link">John</a> Lorem ipsum dolor sit
+                                            amet, consectetur
+                                            adipiscing elit, sed do eiusmod tempor </p>
+                                    </div> -->
+                                </div>
+                                <div class="post-comment">
+
+                                    <input type="hidden" value="<%= post._id %>">
+                                    <img src="<%= user.avatar %>" alt="" class="profile-photo-sm" />
+                                    <input type="text" class="form-control" placeholder="Post a comment" onclick="postComment(this)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                </div>
+
+                <!-- Newsfeed Common Side Bar Right
+              ================================================= -->
+                <!-- <div class="col-md-2 static">
+                    <div class="suggestions" id="sticky-sidebar">
+                        <h4 class="grey">Who to Follow</h4>
+                        <div class="follow-user">
+                            <img src="images/users/user-11.jpg" alt="" class="profile-photo-sm pull-left" />
+                            <div>
+                                <h5><a href="timeline.html">Diana Amber</a></h5>
+                                <a href="#" class="text-green">Add friend</a>
+                            </div>
+                        </div>
+                        <div class="follow-user">
+                            <img src="images/users/user-12.jpg" alt="" class="profile-photo-sm pull-left" />
+                            <div>
+                                <h5><a href="timeline.html">Cris Haris</a></h5>
+                                <a href="#" class="text-green">Add friend</a>
+                            </div>
+                        </div>
+                        <div class="follow-user">
+                            <img src="images/users/user-13.jpg" alt="" class="profile-photo-sm pull-left" />
+                            <div>
+                                <h5><a href="timeline.html">Brian Walton</a></h5>
+                                <a href="#" class="text-green">Add friend</a>
+                            </div>
+                        </div>
+                        <div class="follow-user">
+                            <img src="images/users/user-14.jpg" alt="" class="profile-photo-sm pull-left" />
+                            <div>
+                                <h5><a href="timeline.html">Olivia Steward</a></h5>
+                                <a href="#" class="text-green">Add friend</a>
+                            </div>
+                        </div>
+                        <div class="follow-user">
+                            <img src="images/users/user-15.jpg" alt="" class="profile-photo-sm pull-left" />
+                            <div>
+                                <h5><a href="timeline.html">Sophia Page</a></h5>
+                                <a href="#" class="text-green">Add friend</a>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <!-- footer -->
+    <% include ../partials/footer %>
+
+    <!-- script -->
+    <% include ../partials/script %>
+    <script src="/js/lib/posts.js"></script>
+
+</body>
+
+</html>

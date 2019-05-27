@@ -1,5 +1,3 @@
-
-
 // function convertDateAndTime(dateAndTime) {
 //     const now = new Date();
 //     const timeOfMessage = new Date(dateAndTime);
@@ -56,23 +54,28 @@ btnSendMessage.addEventListener('keydown', e => {
             message.innerHTML = htmlCode;
             // console.log(message);
             boxConversation.appendChild(message);
-            
+
 
             const miniConversation = 'conver-' + conversationId.value;
             const minBoxConversation = document.getElementById(miniConversation);
-            let htmlCodeForMiniConversation = '';
-            htmlCodeForMiniConversation += '<input type="hidden" value="' + conversationId.value + '" />';
-            htmlCodeForMiniConversation += '<a href="/messages/t/' + conversationId.value + '">';
-            htmlCodeForMiniConversation += '<div class="contact">';
-            htmlCodeForMiniConversation += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm pull-left" />';
-            htmlCodeForMiniConversation += '<div class="msg-preview">';
-            htmlCodeForMiniConversation += '<h6>' + res.data.name.first + ' ' + res.data.name.last + '</h6>';
-            htmlCodeForMiniConversation += '<p class="text-muted">you: ' + reply.value + '</p>';
-            htmlCodeForMiniConversation += '<small class="text-muted">' + convertTime() + '</small>';
-            htmlCodeForMiniConversation += '</div>';
-            htmlCodeForMiniConversation += '</div>';
-            htmlCodeForMiniConversation += '</a>';
-            minBoxConversation.innerHTML = htmlCodeForMiniConversation;
+            // let htmlCodeForMiniConversation = '';
+            // htmlCodeForMiniConversation += '<input type="hidden" value="' + conversationId.value + '" />';
+            // htmlCodeForMiniConversation += '<a href="/messages/t/' + conversationId.value + '">';
+            // htmlCodeForMiniConversation += '<div class="contact">';
+            // htmlCodeForMiniConversation += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm pull-left" />';
+            // htmlCodeForMiniConversation += '<div class="msg-preview">';
+            // htmlCodeForMiniConversation += '<h6>' + res.data.name.first + ' ' + res.data.name.last + '</h6>';
+            // htmlCodeForMiniConversation += '<p class="text-muted">you: ' + reply.value + '</p>';
+            // htmlCodeForMiniConversation += '<small class="text-muted">' + convertTime() + '</small>';
+            // htmlCodeForMiniConversation += '</div>';
+            // htmlCodeForMiniConversation += '</div>';
+            // htmlCodeForMiniConversation += '</a>';
+            // minBoxConversation.innerHTML = htmlCodeForMiniConversation;
+            const messageText = minBoxConversation.children[1].children[0].children[1].children[1];
+            messageText.innerHTML = 'you:' + reply.value;
+            const messageTime = minBoxConversation.children[1].children[0].children[1].children[2];
+            messageTime.innerHTML = convertTime();
+            // console.log();
             reply.value = '';
         }).catch(err => {
             console.log(err);
@@ -131,24 +134,29 @@ function sendReply(e) {
         message.innerHTML = htmlCode;
         // console.log(message);
         boxConversation.appendChild(message);
-        
+
 
 
         const miniConversation = 'conver-' + conversationId.value;
         const minBoxConversation = document.getElementById(miniConversation);
-        let htmlCodeForMiniConversation = '';
-        htmlCodeForMiniConversation += '<input type="hidden" value="' + conversationId.value + '" />';
-        htmlCodeForMiniConversation += '<a href="/messages/t/' + conversationId.value + '">';
-        htmlCodeForMiniConversation += '<div class="contact">';
-        htmlCodeForMiniConversation += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm pull-left" />';
-        htmlCodeForMiniConversation += '<div class="msg-preview">';
-        htmlCodeForMiniConversation += '<h6>' + res.data.name.first + ' ' + res.data.name.last + '</h6>';
-        htmlCodeForMiniConversation += '<p class="text-muted">' + reply.value + '</p>';
-        htmlCodeForMiniConversation += '<small class="text-muted">' + convertTime() + '</small>';
-        htmlCodeForMiniConversation += '</div>';
-        htmlCodeForMiniConversation += '</div>';
-        htmlCodeForMiniConversation += '</a>';
-        minBoxConversation.innerHTML = htmlCodeForMiniConversation;
+        // let htmlCodeForMiniConversation = '';
+        // htmlCodeForMiniConversation += '<input type="hidden" value="' + conversationId.value + '" />';
+        // htmlCodeForMiniConversation += '<a href="/messages/t/' + conversationId.value + '">';
+        // htmlCodeForMiniConversation += '<div class="contact">';
+        // htmlCodeForMiniConversation += '<img src="' + res.data.avatar + '" alt="" class="profile-photo-sm pull-left" />';
+        // htmlCodeForMiniConversation += '<div class="msg-preview">';
+        // htmlCodeForMiniConversation += '<h6>' + res.data.name.first + ' ' + res.data.name.last + '</h6>';
+        // htmlCodeForMiniConversation += '<p class="text-muted">' + reply.value + '</p>';
+        // htmlCodeForMiniConversation += '<small class="text-muted">' + convertTime() + '</small>';
+        // htmlCodeForMiniConversation += '</div>';
+        // htmlCodeForMiniConversation += '</div>';
+        // htmlCodeForMiniConversation += '</a>';
+        // minBoxConversation.innerHTML = htmlCodeForMiniConversation;
+        // console.log(minBoxConversation.children[1].children[0].children[1].children);
+        const messageText = minBoxConversation.children[1].children[0].children[1].children[1];
+        messageText.innerHTML = 'you:' + reply.value;
+        const messageTime = minBoxConversation.children[1].children[0].children[1].children[2];
+        messageTime.innerHTML = convertTime();
         reply.value = '';
     }).catch(err => {
         console.log(err);
@@ -173,4 +181,3 @@ function sendReply(e) {
 
 
 }
-

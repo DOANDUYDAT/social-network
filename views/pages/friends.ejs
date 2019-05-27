@@ -79,7 +79,27 @@
                     ================================================= -->
                         <div class="friend-list">
                             <div class="row">
+                                <% if (acc.friendsList.length > 0) { %>
+                                <% acc.friendsList.forEach( friend => { %>
                                 <div class="col-md-6 col-sm-6">
+                                    <div class="friend-card">
+                                        <img src="<%= friend.background%>" alt="profile-cover"
+                                            class="img-responsive cover" />
+                                        <div class="card-info">
+                                            <img src="<%= friend.avatar%>" alt="user" class="profile-photo-lg" />
+                                            <div class="friend-info">
+                                                <a href="#" class="pull-right text-green">My Friend</a>
+                                                <h5><a href="/<%= friend.friendAccount %>" class="profile-link"><%= friend.name.first %> <%= friend.name.last %></a></h5>
+                                                <p><%= friend.job %></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }) %>
+                                <% } else { %>
+                                <h1>Chua co ban be</h1>
+                                <% } %>
+                                <!-- <div class="col-md-6 col-sm-6">
                                     <div class="friend-card">
                                         <img src="/images/covers/1.jpg" alt="profile-cover"
                                             class="img-responsive cover" />
@@ -204,7 +224,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

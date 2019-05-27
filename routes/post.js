@@ -29,6 +29,8 @@ router.post('/comment', postController.newComment);
 // all comments of a post
 router.get('/t/:postId/comments', postController.loadComments);
 
+//particular post
+router.get('/t/:postId', postController.getParticularPost);
 //create new post
 router.post('/t', Multer.uploadPost, postController.newPost);
 

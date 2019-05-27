@@ -17,6 +17,10 @@ const userSchema = new Schema({
         month: String,
         year: Number
     },
+    job: {
+        type: String,
+        default: 'Student'
+    },
     about: String,
     gender: String,
     address: {
